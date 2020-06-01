@@ -1,0 +1,33 @@
+#pragma once
+
+#include <Runtime/Core/Public/CoreMinimal.h>
+#include <Runtime/Engine/Classes/GameFramework/Pawn.h>
+
+#include "SowingSeasonPlayerPawn.generated.h"
+
+class UCameraComponent;
+class URTSMovementComponent;
+class USceneComponent;
+class USpringArmComponent;
+
+UCLASS()
+class ASowingSeasonPlayerPawn : public APawn
+{
+	GENERATED_BODY()
+
+public:
+
+	ASowingSeasonPlayerPawn(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY()
+	USceneComponent* PawnRootComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	URTSMovementComponent* MovementComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* CameraComponent;
+};

@@ -1,0 +1,21 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{FF899131-41F3-5006-D4CE-D19EB81FD160}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "SowingSeason",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		},
+		{
+			"Name": "Movement",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
