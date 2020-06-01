@@ -1,4 +1,4 @@
-// ColonyBuilder Project, personal project by Tom Shinton
+// Sowing Season - Tom Shinton 2020
 
 #pragma once
 

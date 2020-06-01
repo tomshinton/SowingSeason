@@ -1,4 +1,4 @@
-// ColonyBuilder Project, personal project by Tom Shinton
+// Sowing Season - Tom Shinton 2020
 
 #include "Runtime/Movement/Public/RTSMovementComponent.h"
 #include "Runtime/Movement/Public/MovementSettings.h"

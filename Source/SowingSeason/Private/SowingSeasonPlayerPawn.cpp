@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "SowingSeason/Public/SowingSeasonPlayerPawn.h"
 
 #include <Runtime/Engine/Classes/Camera/CameraComponent.h>
