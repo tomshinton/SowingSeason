@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SizeReference",
+	"Description": "Basic Size Reference Materials and Textures, mapped to world space",
+	"Category": "Other",
+	"CreatedBy": "Tom Shinton",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false
+}
