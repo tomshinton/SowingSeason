@@ -7,6 +7,7 @@
 
 #include "SowingSeasonPlayerPawn.generated.h"
 
+class UBuildComponent;
 class UCameraComponent;
 class URTSMovementComponent;
 class USceneComponent;
@@ -25,11 +26,14 @@ public:
 	USceneComponent* PawnRootComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	URTSMovementComponent* MovementComponent;
-
-	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	URTSMovementComponent* MovementComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UBuildComponent* BuildComponent;
 };

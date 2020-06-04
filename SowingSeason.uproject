@@ -16,6 +16,16 @@
 			"Name": "Movement",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "Build",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "WorldGrid",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }

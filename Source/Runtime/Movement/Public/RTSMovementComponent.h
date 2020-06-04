@@ -14,10 +14,6 @@ class APlayerController;
 class USpringArmComponent;
 class UMovementSettings;
 
-//////////////////////////////////////////////////////////////////////////
-// RTS Movement class, controls how the pawn moves, zooms, and scrolls around the viewport
-//////////////////////////////////////////////////////////////////////////
-
 UCLASS( MinimalAPI, ClassGroup=(Movement), meta=(BlueprintSpawnableComponent) )
 class URTSMovementComponent : public UActorComponent
 {
@@ -75,6 +71,7 @@ private:
 	FVector2D CurrMousePos;
 	FVector2D StoredMousePos;
 	FVector2D ViewportSize;
+
 	bool UsingMiddleMouseMovement;
 	FTimerHandle MiddleMouseMoveTimer;
 

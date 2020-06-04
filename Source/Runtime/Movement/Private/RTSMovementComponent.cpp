@@ -111,18 +111,6 @@ void URTSMovementComponent::InitialiseCameraView()
 	{
 		CameraArm->TargetArmLength = TargetArmLength;
 	}
-
-	if (OwningController != nullptr)
-	{
-		OwningController->bShowMouseCursor = true;
-		OwningController->bEnableClickEvents = true;
-		OwningController->bEnableMouseOverEvents = true;
-
-		FInputModeGameAndUI InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-		InputMode.SetHideCursorDuringCapture(false);
-		OwningController->SetInputMode(InputMode);
-	}
 }
 
 const FEdgeBands* URTSMovementComponent::GetEdgeBands() const

@@ -16,7 +16,9 @@ public class SowingSeason : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-			"Movement"
+			"Build",
+			"Movement",
+			"WorldGrid"
 		});
 	}
 }

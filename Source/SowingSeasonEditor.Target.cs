@@ -7,6 +7,10 @@ public class SowingSeasonEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 
-		ExtraModuleNames.AddRange( new string[] { "SowingSeason" } );
+		ExtraModuleNames.AddRange( new string[] 
+		{ 
+			"SowingSeason",
+			"BuildEditor"
+		} );
 	}
 }

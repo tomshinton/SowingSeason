@@ -12,4 +12,8 @@ class ASowingSeasonGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+
+	ASowingSeasonGameModeBase(const FObjectInitializer& ObjectInitializer);
+
 };
