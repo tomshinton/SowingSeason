@@ -13,4 +13,7 @@ public:
 
 	UBuildingData()
 	{};
+
+	UPROPERTY(EditDefaultsOnly, meta=(AllowedClass=Actor))
+	FSoftClassPath BuildingClass;
 };

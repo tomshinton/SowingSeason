@@ -102,5 +102,5 @@ void UBuildComponent::TryCancelBuild()
 
 void UBuildComponent::OnRoundedPositionChanged(const FVector& InNewPosition, const FVector& InOldPosition)
 {
-	UE_LOG(LogTemp, Log, TEXT("New rounded pos: %s from %s"), *InNewPosition.ToString(), *InOldPosition.ToString());
+
 }

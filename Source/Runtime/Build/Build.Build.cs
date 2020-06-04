@@ -10,6 +10,7 @@ public class Build : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[] 
         {
+			"Buildings",
             "Engine",
             "CoreUObject",
 			"WorldGrid"

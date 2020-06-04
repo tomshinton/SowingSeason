@@ -23,7 +23,17 @@
 			"LoadingPhase": "Default"
 		},
 		{
+			"Name": "Buildings",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
 			"Name": "WorldGrid",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UI",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
