@@ -14,9 +14,9 @@
 
 #include "BuildComponent.generated.h"
 
-class ABuildingGhost;
+class AGhostRenderer;
 class IGridProjectionInterface;
-class IGhostInterface;
+class IGhostRendererInterface;
 class UBuildingData;
 
 UCLASS( MinimalAPI, ClassGroup=(Build))
@@ -38,6 +38,9 @@ private:
 
 	void BeginPlay() override;
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void SetupComponentInputBindings(UInputComponent& PlayerInputComponent) override;
+
+	void InitialiseGhost(UClass& InGhostClass);
 
 	//IBuildInterface
 	void StartBuildFromClass(const FSoftObjectPath& InBuildingData) override;
@@ -52,8 +55,8 @@ private:
 	const UBuildingData* CurrentBuildData;
 
 	UPROPERTY()
-	TSubclassOf<ABuildingGhost> GhostClass;
+	TSubclassOf<AGhostRenderer> GhostClass;
 
-	TWeakInterfacePtr<IGhostInterface> CurrentGhost;
+	TWeakInterfacePtr<IGhostRendererInterface> GhostRenderer;
 	TManagerPtr<IGridProjectionInterface> GridProjectionInterface;
 };

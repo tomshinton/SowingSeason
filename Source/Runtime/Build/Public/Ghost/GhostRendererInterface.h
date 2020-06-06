@@ -2,22 +2,21 @@
 
 #include <Runtime/CoreUObject/Public/UObject/Interface.h>
 
-#include "GhostInterface.generated.h"
+#include "GhostRendererInterface.generated.h"
 
 class UBuildingData;
 
 UINTERFACE(MinimalAPI)
-class UGhostInterface : public UInterface
+class UGhostRendererInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class IGhostInterface
+class IGhostRendererInterface
 {
 	GENERATED_BODY()
 
 public:
 
 	virtual void SetGhostInfo(const UBuildingData& InSourceBuildingData) = 0;
-	virtual void DestroyGhost() = 0;
 };

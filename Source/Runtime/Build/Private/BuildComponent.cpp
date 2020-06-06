@@ -6,8 +6,7 @@
 
 #include "Runtime/Build/Public/BuildInterface.h"
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
-#include "Runtime/Build/Public/Ghost/BuildingGhost.h"
-#include "Runtime/Build/Public/Ghost/GhostInterface.h"
+#include "Runtime/Build/Public/Ghost/GhostRenderer.h"
 
 #include <Runtime/WorldGrid/Public/GridProjection/GridProjectionInterface.h>
 
@@ -18,7 +17,7 @@ UBuildComponent::UBuildComponent()
 	, AsyncLoader(MakeUnique<FAsyncLoader>())
 	, CurrentBuildData(nullptr)
 	, GhostClass(nullptr)
-	, CurrentGhost()
+	, GhostRenderer()
 	, GridProjectionInterface(*this)
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -35,21 +34,10 @@ void UBuildComponent::BeginPlay()
 		{
 			if (WeakThis.IsValid())
 			{
-				if (InLoadedClass.ImplementsInterface(UGhostInterface::StaticClass()))
+				if (InLoadedClass.ImplementsInterface(UGhostRendererInterface::StaticClass()))
 				{
-					GhostClass = &InLoadedClass;
+					WeakThis->InitialiseGhost(InLoadedClass);
 				}
-			}
-		});
-	}
-
-	if (IGridProjectionInterface* GridProjection = GridProjectionInterface.Get())
-	{
-		GridProjection->GetOnRoundedPositionChanged().AddLambda([WeakThis = TWeakObjectPtr<UBuildComponent>(this)](const FVector& InNewPosition, const FVector& InOldPosition)
-		{
-			if (WeakThis.IsValid())
-			{
-				WeakThis->OnRoundedPositionChanged(InNewPosition, InOldPosition);
 			}
 		});
 	}
@@ -58,6 +46,26 @@ void UBuildComponent::BeginPlay()
 void UBuildComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
+void UBuildComponent::SetupComponentInputBindings(UInputComponent& PlayerInputComponent)
+{
+	Super::SetupComponentInputBindings(PlayerInputComponent);
+}
+
+void UBuildComponent::InitialiseGhost(UClass& InGhostClass)
+{
+	if(UWorld * World = GetWorld())
+	{
+		if (AActor* Ghost = World->SpawnActor<AActor>(&InGhostClass, FTransform::Identity))
+		{
+			GhostRenderer = *Ghost->GetInterface<IGhostRendererInterface>();
+
+#if WITH_EDITORONLY_DATA
+			Ghost->SetFolderPath(TEXT("Renderer"));
+#endif //WITH_EDITORONLY_DATA
+		}
+	}
 }
 
 void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
@@ -70,21 +78,10 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 			{
 				UE_LOG(BuildComponentLog, Log, TEXT("Loaded Building Data for %s"), *LoadedBuildingData.GetName());
 				WeakThis->CurrentBuildData = &LoadedBuildingData;
-
-				if (UWorld* World = GetWorld())
+				
+				if (GhostRenderer.IsValid())
 				{
-					if (CurrentGhost.IsValid())
-					{
-						CurrentGhost->DestroyGhost();
-					}
-
-					if (GhostClass != nullptr)
-					{
-						if (AActor* NewGhost = World->SpawnActor<AActor>(GhostClass, FTransform::Identity))
-						{
-							CurrentGhost = *Cast<IGhostInterface>(NewGhost);
-						}
-					}
+					GhostRenderer->SetGhostInfo(LoadedBuildingData);
 				}
 			}
 		});
@@ -96,11 +93,6 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 }
 
 void UBuildComponent::TryCancelBuild()
-{
-
-}
-
-void UBuildComponent::OnRoundedPositionChanged(const FVector& InNewPosition, const FVector& InOldPosition)
 {
 
 }
