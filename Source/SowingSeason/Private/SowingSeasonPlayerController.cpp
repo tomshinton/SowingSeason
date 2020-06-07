@@ -25,9 +25,13 @@ void ASowingSeasonPlayerController::BeginPlay()
 #if !UE_BUILD_SHIPPING
 	EnableCheats();
 #endif //UE_BUILD_SHIPPING
-
+	
 	FInputModeGameAndUI InputMode;
-	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-	InputMode.SetHideCursorDuringCapture(false);
+	InputMode 
+		.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways)
+		.SetHideCursorDuringCapture(false)
+		.SetWidgetToFocus(nullptr)
+		.SetMouseCaptureMode(EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown);
+	
 	SetInputMode(InputMode);
 }
