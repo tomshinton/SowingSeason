@@ -15,6 +15,8 @@ namespace BuildComponentBindings
 {
 	const FName StartBuildBinding = TEXT("StartBuild");
 	const FName CancelBuildBinding = TEXT("CancelBuild");
+
+	const FName RotateBuildingBinding = TEXT("RotateBuild");
 }
 
 UBuildComponent::UBuildComponent()
@@ -27,8 +29,6 @@ UBuildComponent::UBuildComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
-
-
 }
 
 void UBuildComponent::BeginPlay()
@@ -62,6 +62,8 @@ void UBuildComponent::SetupComponentInputBindings(UInputComponent& PlayerInputCo
 	PlayerInputComponent.BindAction(BuildComponentBindings::StartBuildBinding, IE_Pressed, this, &UBuildComponent::StartBuild);
 	PlayerInputComponent.BindAction(BuildComponentBindings::StartBuildBinding, IE_Released, this, &UBuildComponent::EndBuild);
 	PlayerInputComponent.BindAction(BuildComponentBindings::CancelBuildBinding, IE_Pressed, this, &UBuildComponent::CancelBuild);
+
+	PlayerInputComponent.BindAction(BuildComponentBindings::RotateBuildingBinding, IE_Pressed, this, &UBuildComponent::RotateBuild);
 }
 
 void UBuildComponent::InitialiseGhost(UClass& InGhostClass)
@@ -155,6 +157,14 @@ void UBuildComponent::CancelBuild()
 			CurrentPointBuilder = nullptr;
 			BuildingData = nullptr;
 		}
+	}
+}
+
+void UBuildComponent::RotateBuild()
+{
+	if (CurrentPointBuilder != nullptr)
+	{
+		CurrentPointBuilder->RotateBuild();
 	}
 }
 

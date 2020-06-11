@@ -50,6 +50,8 @@ private:
 	void EndBuild();
 	void CancelBuild();
 
+	void RotateBuild();
+
 	void OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints);
 
 	TUniquePtr<FAsyncLoader> AsyncLoader;

@@ -83,6 +83,8 @@ public:
 
 	virtual void GenerateNewPoints() PURE_VIRTUAL(UPointBuilder::GenerateNewPoints, );
 
+	virtual void RotateBuild() {};
+
 protected:
 
 	UPROPERTY(Transient)
@@ -100,6 +102,7 @@ protected:
 
 	FVector StartedLocation;
 	FVector CurrentMouseLocation;
+	FRotator CurrentRotation;
 
 	TUniquePtr<FAsyncLoader> AsyncLoader;
 };

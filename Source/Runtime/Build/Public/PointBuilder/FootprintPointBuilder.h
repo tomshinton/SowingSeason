@@ -88,6 +88,12 @@ public:
 		FootprintProxy = nullptr;
 	}
 
+	void RotateBuild() override
+	{
+		FootprintProxy->AddWorldRotation(FQuat(FRotator(0.f, 45.f, 0.f)));
+		GenerateNewPoints();
+	}
+
 private:
 
 	bool IsPointOnFootprint(const FVector& InPoint)
