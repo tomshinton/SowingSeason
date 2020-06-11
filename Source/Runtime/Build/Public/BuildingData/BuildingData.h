@@ -6,6 +6,8 @@
 
 #include "BuildingData.generated.h"
 
+class FPointBuilder;
+
 UCLASS()
 class UBuildingData : public UDataAsset
 {
@@ -13,12 +15,23 @@ class UBuildingData : public UDataAsset
 
 public:
 
-	UBuildingData()
-	{};
+	UBuildingData();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Build Mode")
 	EBuildMode BuildMode;
 
-	UPROPERTY(EditDefaultsOnly, meta=(AllowedClass=Actor))
+	UPROPERTY(EditDefaultsOnly, meta=(AllowedClass=Actor), Category = "Build Mode")
 	FSoftClassPath BuildingClass;
-};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ghost")
+	bool UseStaticGhostVisual;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowedClass = StaticMesh), Category = "Ghost")
+	FSoftObjectPath GhostVisual;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Build Meta")
+	bool ShouldCancelBuildPostPlacement;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString NameReadable;
+};	

@@ -3,13 +3,12 @@
 #pragma once
 
 #include <Runtime/Core/Public/CoreMinimal.h>
+#include <Runtime/Engine/Classes/Components/ActorComponent.h>
 
 #include "Runtime/Build/Public/BuildInterface.h"
+#include "Runtime/Build/Public/PointBuilder/PointBuilder.h"
 
-#include <Runtime/Core/Public/Templates/UniquePtr.h>
 #include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
-#include <Runtime/CoreUObject/Public/UObject/WeakInterfacePtr.h>
-#include <Runtime/Engine/Classes/Components/ActorComponent.h>
 #include <Runtime/Engine/Classes/GameFramework/ManagerFramework/ManagerPtr.h>
 
 #include "BuildComponent.generated.h"
@@ -18,6 +17,7 @@ class AGhostRenderer;
 class IGridProjectionInterface;
 class IGhostRendererInterface;
 class UBuildingData;
+class UPointBuilder;
 
 UCLASS( MinimalAPI, ClassGroup=(Build))
 class UBuildComponent : public UActorComponent
@@ -44,19 +44,24 @@ private:
 
 	//IBuildInterface
 	void StartBuildFromClass(const FSoftObjectPath& InBuildingData) override;
-	void TryCancelBuild();
 	//~IBuildInterface
 
-	void OnRoundedPositionChanged(const FVector& InNewPosition, const FVector& InOldPosition);
+	void StartBuild();
+	void EndBuild();
+	void CancelBuild();
+
+	void OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints);
 
 	TUniquePtr<FAsyncLoader> AsyncLoader;
 
 	UPROPERTY()
-	const UBuildingData* CurrentBuildData;
+	const UBuildingData* BuildingData;
 
 	UPROPERTY()
 	TSubclassOf<AGhostRenderer> GhostClass;
 
 	TWeakInterfacePtr<IGhostRendererInterface> GhostRenderer;
-	TManagerPtr<IGridProjectionInterface> GridProjectionInterface;
+
+	UPROPERTY(Transient)
+	UPointBuilder* CurrentPointBuilder;
 };

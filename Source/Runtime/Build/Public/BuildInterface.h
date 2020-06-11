@@ -17,5 +17,4 @@ class IBuildInterface
 public:
 
 	virtual void StartBuildFromClass(const FSoftObjectPath& InBuildingData) = 0;
-	virtual void TryCancelBuild() = 0;
 };

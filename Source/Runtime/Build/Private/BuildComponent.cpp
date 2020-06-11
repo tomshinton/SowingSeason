@@ -7,21 +7,28 @@
 #include "Runtime/Build/Public/BuildInterface.h"
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
 #include "Runtime/Build/Public/Ghost/GhostRenderer.h"
-
-#include <Runtime/WorldGrid/Public/GridProjection/GridProjectionInterface.h>
+#include "Runtime/Build/Public/PointBuilderFunctions.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BuildComponentLog, Log, Log)
+
+namespace BuildComponentBindings
+{
+	const FName StartBuildBinding = TEXT("StartBuild");
+	const FName CancelBuildBinding = TEXT("CancelBuild");
+}
 
 UBuildComponent::UBuildComponent()
 	: SoftGhostClass()
 	, AsyncLoader(MakeUnique<FAsyncLoader>())
-	, CurrentBuildData(nullptr)
+	, BuildingData(nullptr)
 	, GhostClass(nullptr)
 	, GhostRenderer()
-	, GridProjectionInterface(*this)
+	, CurrentPointBuilder(nullptr)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
+
+
 }
 
 void UBuildComponent::BeginPlay()
@@ -51,6 +58,10 @@ void UBuildComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, F
 void UBuildComponent::SetupComponentInputBindings(UInputComponent& PlayerInputComponent)
 {
 	Super::SetupComponentInputBindings(PlayerInputComponent);
+
+	PlayerInputComponent.BindAction(BuildComponentBindings::StartBuildBinding, IE_Pressed, this, &UBuildComponent::StartBuild);
+	PlayerInputComponent.BindAction(BuildComponentBindings::StartBuildBinding, IE_Released, this, &UBuildComponent::EndBuild);
+	PlayerInputComponent.BindAction(BuildComponentBindings::CancelBuildBinding, IE_Pressed, this, &UBuildComponent::CancelBuild);
 }
 
 void UBuildComponent::InitialiseGhost(UClass& InGhostClass)
@@ -77,22 +88,77 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 			if (WeakThis.IsValid())
 			{
 				UE_LOG(BuildComponentLog, Log, TEXT("Loaded Building Data for %s"), *LoadedBuildingData.GetName());
-				WeakThis->CurrentBuildData = &LoadedBuildingData;
+				WeakThis->BuildingData = &LoadedBuildingData;
 				
 				if (GhostRenderer.IsValid())
 				{
 					GhostRenderer->SetGhostInfo(LoadedBuildingData);
+
+					CurrentPointBuilder = PointBuilderFunctions::GetBuilderForMode(*BuildingData, *this);
+
+					if (CurrentPointBuilder != nullptr)
+					{
+						CurrentPointBuilder->Init(*BuildingData, [WeakThis](const TArray<FFoundationPoint>& GeneratedPoints)
+						{
+							if (WeakThis.IsValid())
+							{
+								WeakThis->OnNewPointsGenerated(GeneratedPoints);
+							}
+						});
+					}
 				}
 			}
 		});
 	}
 	else
 	{
-		TryCancelBuild();
+		CancelBuild();
 	}
 }
 
-void UBuildComponent::TryCancelBuild()
+void UBuildComponent::StartBuild()
 {
+	if (BuildingData != nullptr)
+	{
+		UE_LOG(BuildComponentLog, Log, TEXT("Starting build of %s, starting point generation"), *BuildingData->NameReadable);
+	
+		if (CurrentPointBuilder != nullptr)
+		{
+			CurrentPointBuilder->StartBuild();
+		}
+	}
+}
 
+void UBuildComponent::EndBuild()
+{
+	if (BuildingData != nullptr)
+	{
+		UE_LOG(BuildComponentLog, Log, TEXT("Ending build of %s, can proceed to spawn building actual"), *BuildingData->NameReadable);
+
+		if (BuildingData->ShouldCancelBuildPostPlacement)
+		{
+			CancelBuild();
+		}
+	}
+}
+
+void UBuildComponent::CancelBuild()
+{
+	if (BuildingData != nullptr)
+	{
+		UE_LOG(BuildComponentLog, Log, TEXT("Cancelling build of %s, building can be built again"), *BuildingData->NameReadable);
+
+		if (CurrentPointBuilder != nullptr)
+		{
+			CurrentPointBuilder->Teardown();
+
+			CurrentPointBuilder = nullptr;
+			BuildingData = nullptr;
+		}
+	}
+}
+
+void UBuildComponent::OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints)
+{
+	GhostRenderer->UpdateRender(InNewPoints);
 }

@@ -19,8 +19,8 @@ class IGridProjectionInterface
 
 public:
 
-	const virtual FVector* GetPositionUnderMouse() const = 0;
-	const virtual FVector* GetRoundedPositionUnderMouse() const = 0;
+	virtual const FVector GetPositionUnderMouse() const = 0;
+	virtual const FVector GetRoundedPositionUnderMouse() const = 0;
 
 	virtual FOnRoundedPositionChanged& GetOnRoundedPositionChanged() = 0;
 	virtual FOnPositionChanged& GetOnPositionChanged() = 0;

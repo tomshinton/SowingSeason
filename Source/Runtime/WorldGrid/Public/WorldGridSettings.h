@@ -19,6 +19,11 @@ public:
 		, ReprojectRoundedValues(true)
 	{};
 	
+	FORCEINLINE const FVector GetCellBounds() const
+	{
+		return FVector(GridCellSize * 0.5, GridCellSize * 0.5, 300.f);
+	}
+
 	/** How big is a single grid cell? */
 	UPROPERTY(config, EditDefaultsOnly, Category = "Grid Dimensions")
 	uint16 GridCellSize;

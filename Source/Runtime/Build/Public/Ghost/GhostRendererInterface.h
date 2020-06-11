@@ -5,6 +5,7 @@
 #include "GhostRendererInterface.generated.h"
 
 class UBuildingData;
+class FFoundationPoint;
 
 UINTERFACE(MinimalAPI)
 class UGhostRendererInterface : public UInterface
@@ -19,4 +20,5 @@ class IGhostRendererInterface
 public:
 
 	virtual void SetGhostInfo(const UBuildingData& InSourceBuildingData) = 0;
+	virtual void UpdateRender(const TArray<FFoundationPoint>& InPoints) = 0;
 };

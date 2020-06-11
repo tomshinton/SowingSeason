@@ -36,8 +36,8 @@ private:
 	const UWorldGridSettings* WorldGridSettings;
 
 	//IGridLocationManagerInterface
-	const FVector* GetPositionUnderMouse() const override;
-	const FVector* GetRoundedPositionUnderMouse() const override;
+	const FVector GetPositionUnderMouse() const override;
+	const FVector GetRoundedPositionUnderMouse() const override;
 	FOnRoundedPositionChanged& GetOnRoundedPositionChanged() override;
 	FOnPositionChanged& GetOnPositionChanged() override;
 	//~IGridLocationManagerInterface

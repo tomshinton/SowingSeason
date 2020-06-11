@@ -38,14 +38,14 @@ void UGridProjectionManager::Init(const UWorld& InWorld)
 	}
 }
 
-const FVector* UGridProjectionManager::GetPositionUnderMouse() const
+const FVector UGridProjectionManager::GetPositionUnderMouse() const
 {
-    return &Position;
+    return Position;
 }
 
-const FVector* UGridProjectionManager::GetRoundedPositionUnderMouse() const
+const FVector UGridProjectionManager::GetRoundedPositionUnderMouse() const
 {
-	return &RoundedPosition;
+	return RoundedPosition;
 }
 
 FOnRoundedPositionChanged& UGridProjectionManager::GetOnRoundedPositionChanged()
