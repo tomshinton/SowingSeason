@@ -33,14 +33,6 @@ void AGhostRenderer::BeginPlay()
 			if (WeakThis.IsValid())
 			{
 				GhostRoot = InNewLocation;
-
-#if !UE_BUILD_SHIPPING
-				if (CVarDebugGhostRender.GetValueOnAnyThread())
-				{
-					FlushPersistentDebugLines(CachedWorld);
-					DrawDebugBox(CachedWorld, InNewLocation, GridSettings->GetCellBounds(), FQuat::Identity, FColorList::BlueViolet, true, -1.f, 0, 20.f);
-				}
-#endif //!UE_BUILD_SHIPPING
 			}
 		});
 	}
@@ -55,11 +47,15 @@ void AGhostRenderer::UpdateRender(const TArray<FFoundationPoint>& InPoints)
 {
 	LastRenderedPoints = InPoints;
 
-	FlushPersistentDebugLines(CachedWorld);
-
-	for (const FFoundationPoint& Point : InPoints)
+#if !UE_BUILD_SHIPPING
+	if (CVarDebugGhostRender.GetValueOnAnyThread())
 	{
-		DrawDebugSphere(CachedWorld, Point.Location, GridSettings->GridCellSize * .5, 12.f, FColor::White, true, -1, 0, 2.f);
+		FlushPersistentDebugLines(CachedWorld);
+		for (const FFoundationPoint& Point : InPoints)
+		{
+			DrawDebugSphere(CachedWorld, Point.Location, GridSettings->GridCellSize * .5, 4.f, FColor::Green, true, -1, 0, 2.f);
+		}
 	}
+#endif //!UE_BUILD_SHIPPING
 }
 

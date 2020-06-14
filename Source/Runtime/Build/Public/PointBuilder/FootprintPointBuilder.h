@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Runtime/Build/Public/PointBuilder/PointBuilder.h"
+#include "Runtime/Build/Public/PointBuilder/PointValidator.h"
 
 #include <Runtime/Buildings/Public/FootprintProviderInterface.h>
 #include <Runtime/Engine/Classes/Components/BoxComponent.h>
+
 
 #include "FootprintPointBuilder.generated.h"
 
@@ -37,7 +39,7 @@ public:
 			RawPointCountExtent *= 0.5f;
 
 			FootprintProxy = NewObject<UBoxComponent>(GetOuter());
-			FootprintProxy->SetBoxExtent(Bounds.BoxExtent);
+			FootprintProxy->SetBoxExtent(Bounds.BoxExtent * FVector(1.f, 1.f, 100.f));
 			FootprintProxy->RegisterComponent();
 
 			FootprintProxy->SetHiddenInGame(false);
@@ -53,30 +55,24 @@ public:
 
 		if (BuildingBounds.IsSet())
 		{
-			FlushPersistentDebugLines(GetWorld());
-
 			FootprintProxy->SetWorldLocation(CurrentMouseLocation);
 
-			TArray<FVector> RawPoints;
-			RawPoints.Reserve(FMath::Square<uint8>(RawPointCountExtent));
-
+			TArray<FFoundationPoint> Points;
 			for (int8 x = -RawPointCountExtent; x <= RawPointCountExtent; ++x)
 			{
 				for (int8 y = -RawPointCountExtent; y <= RawPointCountExtent; ++y)
 				{
-					const FVector NewVector = CurrentMouseLocation + FVector(GridSettings->GridCellSize * x, GridSettings->GridCellSize * y, CurrentMouseLocation.Z);
+					const FVector NewVector = CurrentMouseLocation + FVector(GridSettings->GridCellSize * x, GridSettings->GridCellSize * y, 0.f);
 
 					if (IsPointOnFootprint(NewVector))
 					{
-						RawPoints.Emplace(NewVector);
-						DrawDebugSphere(GetWorld(), NewVector, GridSettings->GridCellSize * 0.5f, 4, FColor::Green, true);
-					}
-					else
-					{
-						DrawDebugSphere(GetWorld(), NewVector, GridSettings->GridCellSize * 0.5f, 4, FColor::Red, true);
+						Points.Emplace(NewVector);
 					}
 				}
 			}
+
+			PointValidator = MakeUnique<FPointValidator>(Points, *GetWorld(), Callback);
+			PointValidator->Run();
 		}
 	}
 
@@ -86,6 +82,9 @@ public:
 
 		FootprintProxy->UnregisterComponent();
 		FootprintProxy = nullptr;
+
+		PointValidator->Stop();
+		PointValidator = nullptr;
 	}
 
 	void RotateBuild() override
@@ -107,4 +106,6 @@ private:
 
 	TOptional<float> BuildingBounds;
 	uint8 RawPointCountExtent;
+
+	TUniquePtr<FPointValidator> PointValidator;
 };

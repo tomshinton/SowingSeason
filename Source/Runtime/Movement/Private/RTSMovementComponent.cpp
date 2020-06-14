@@ -10,7 +10,7 @@ DEFINE_LOG_CATEGORY_STATIC(RTSMovementComponentLog, Log, Log)
 
 namespace RTSMovementPrivate
 {
-	const float MoveFrequency = 0.04f;
+	const float MoveFrequency = 0.01f;
 	const float StaticZHeight = 0.f;
 }
 
