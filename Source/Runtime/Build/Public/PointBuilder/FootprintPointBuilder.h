@@ -6,7 +6,6 @@
 #include <Runtime/Buildings/Public/FootprintProviderInterface.h>
 #include <Runtime/Engine/Classes/Components/BoxComponent.h>
 
-
 #include "FootprintPointBuilder.generated.h"
 
 DEFINE_LOG_CATEGORY_STATIC(FootprintPointBuilderLog, Log, Log)
@@ -25,7 +24,10 @@ class UFootprintPointBuilder : public UPointBuilder
 public:
 
 	UFootprintPointBuilder()
-		: BuildingBounds()
+		: FootprintProxy(nullptr)
+		, BuildingBounds()
+		, RawPointCountExtent(0)
+		, PointValidator(nullptr)
 	{};
 
 	void InitialiseFootprintPointBuilder()
@@ -71,8 +73,8 @@ public:
 				}
 			}
 
-			PointValidator = MakeUnique<FPointValidator>(Points, *GetWorld(), Callback);
-			PointValidator->Run();
+			PointValidator = NewObject<UPointValidator>(this);
+			PointValidator->Run(Points, *GetWorld(), Callback);
 		}
 	}
 
@@ -107,5 +109,6 @@ private:
 	TOptional<float> BuildingBounds;
 	uint8 RawPointCountExtent;
 
-	TUniquePtr<FPointValidator> PointValidator;
+	UPROPERTY()
+	UPointValidator* PointValidator;
 };

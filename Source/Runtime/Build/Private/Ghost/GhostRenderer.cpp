@@ -84,12 +84,6 @@ void AGhostRenderer::UpdateRender(const TArray<FFoundationPoint>& InPoints)
 		}
 	}
 #endif //!UE_BUILD_SHIPPING
-
-	switch (SourceBuildingData->BuildMode)
-	{
-	case EBuildMode::FireAndForget:
-		break;
-	}
 }
 
 void AGhostRenderer::ClearGhost()

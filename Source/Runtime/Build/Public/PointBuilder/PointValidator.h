@@ -1,28 +1,47 @@
 #pragma once
 
-#include <Runtime/CoreUObject/Public/UObject/GCObject.h>
+#include <Runtime/Core/Public/CoreMinimal.h>
+#include <Runtime/CoreUObject/Public/UObject/Object.h>
+
+#include "Runtime/Build/Public/Foundation/FoundationPoint.h"
+
 #include <Runtime/Engine/Public/WorldCollision.h>
 #include <Runtime/WorldGrid/Public/WorldGridSettings.h>
 
+#include "PointValidator.generated.h"
+
 DEFINE_LOG_CATEGORY_STATIC(PointValidationTaskLog, Log, Log)
 
-class FPointValidator : public FGCObject
+UCLASS()
+class UPointValidator : public UObject
 {
+	GENERATED_BODY()
+
 public:
 
-	FPointValidator(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const TArray<FFoundationPoint>&)>& InCallback)
-		: Points(InPoints)
-		, World(&InWorld)
-		, Callback(InCallback)
+	UPointValidator()
+		: Points()
+		, World(nullptr)
+		, Callback(nullptr)
 		, GridSettings(GetDefault<UWorldGridSettings>())
 		, ValidationDelegate()
 		, NumCompletedTraces(0)
 	{
-		ValidationDelegate.BindRaw(this, &FPointValidator::OnTraceComplete);
+		ValidationDelegate.BindWeakLambda(this, [WeakThis = TWeakObjectPtr<UPointValidator>(this)](const FTraceHandle& Handle, FTraceDatum& Data)
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->OnTraceComplete(Handle, Data);
+			}
+		});
 	};
 
-	void Run()
+	void Run(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const TArray<FFoundationPoint>&)>& InCallback)
 	{
+		Points = InPoints;
+		World = &InWorld;
+		Callback = InCallback;
+
 		Requests.Reserve(Points.Num());
 
 		for (const FFoundationPoint& Point : Points)
@@ -43,14 +62,23 @@ public:
 
 	void Stop()
 	{
+		ValidationDelegate.Unbind();
+
 		for (TPair<FTraceHandle, FFoundationPoint>& Request : Requests)
 		{
 			Request.Key._Data.FrameNumber = 0;
 		}
+
+		Requests.Empty();
 	}
 
 	void OnTraceComplete(const FTraceHandle& Handle, FTraceDatum& Data)
 	{
+		if (Requests.Num() <= 0)
+		{
+			return;
+		}
+
 		++NumCompletedTraces;
 
 		if (Requests.Contains(Handle) && Data.OutHits.Num() > 0)
@@ -60,26 +88,18 @@ public:
 			Requests[Handle].Location = CurrHit.Location;
 
 			Points.Add(Requests[Handle]);
-			Requests.Remove(Handle);
 		}
 
-		if (Requests.Num() == 0)
+		if (Requests.Num() == Points.Num())
 		{
 			Callback(Points);
 		}
 	}
 
-	void AddReferencedObjects(FReferenceCollector& Collector) override
-	{
-		Collector.AddReferencedObject(GridSettings);
-	}
-
 private:
 
-	UPROPERTY()
 	TArray<FFoundationPoint> Points;
 
-	UPROPERTY()
 	TMap<FTraceHandle, FFoundationPoint> Requests;
 	
 	UPROPERTY()
