@@ -21,4 +21,5 @@ public:
 
 	virtual void SetGhostInfo(const UBuildingData& InSourceBuildingData) = 0;
 	virtual void UpdateRender(const TArray<FFoundationPoint>& InPoints) = 0;
+	virtual void ClearGhost() = 0;
 };

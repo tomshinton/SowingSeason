@@ -7,7 +7,7 @@
 #include "Runtime/Build/Public/BuildInterface.h"
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
 #include "Runtime/Build/Public/Ghost/GhostRenderer.h"
-#include "Runtime/Build/Public/PointBuilderFunctions.h"
+#include "Runtime/Build/Public/PointBuilder/PointBuilderFunctions.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BuildComponentLog, Log, Log)
 
@@ -137,9 +137,12 @@ void UBuildComponent::EndBuild()
 	{
 		UE_LOG(BuildComponentLog, Log, TEXT("Ending build of %s, can proceed to spawn building actual"), *BuildingData->NameReadable);
 
-		if (BuildingData->ShouldCancelBuildPostPlacement)
+		if (IsBuildingValid())
 		{
-			CancelBuild();
+			if (BuildingData->ShouldCancelBuildPostPlacement)
+			{
+				CancelBuild();
+			}
 		}
 	}
 }
@@ -157,6 +160,8 @@ void UBuildComponent::CancelBuild()
 			CurrentPointBuilder = nullptr;
 			BuildingData = nullptr;
 		}
+
+		GhostRenderer->ClearGhost();
 	}
 }
 
@@ -171,4 +176,9 @@ void UBuildComponent::RotateBuild()
 void UBuildComponent::OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints)
 {
 	GhostRenderer->UpdateRender(InNewPoints);
+}
+
+bool UBuildComponent::IsBuildingValid() const
+{
+	return true;
 }

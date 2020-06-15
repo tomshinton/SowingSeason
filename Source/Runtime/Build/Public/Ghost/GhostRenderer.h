@@ -5,6 +5,8 @@
 #include "Runtime/Build/Public/Ghost/GhostRendererInterface.h"
 #include "Runtime/Build/Public/Foundation/FoundationPoint.h"
 
+#include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
+#include <Runtime/Engine/Classes/Components/HierarchicalInstancedStaticMeshComponent.h>
 #include <Runtime/Engine/Classes/GameFramework/ManagerFramework/ManagerPtr.h>
 
 #include "GhostRenderer.generated.h"
@@ -29,10 +31,18 @@ private:
 	//IGhostInterface
 	virtual void SetGhostInfo(const UBuildingData& InSourceData) override;
 	virtual void UpdateRender(const TArray<FFoundationPoint>& InPoints) override;
+	virtual void ClearGhost() override;
 	//~IGhostInterface
+
+	void InitFireAndForgetGhost();
+
+	void CopyCDOPrimitives(const UObject& InObjectToCopy);
 
 	UPROPERTY(Transient)
 	const UBuildingData* SourceBuildingData;
+
+	UPROPERTY(Transient)
+	UObject* BuildingClassCDO;
 
 	TArray<FFoundationPoint> LastRenderedPoints;
 
@@ -40,8 +50,14 @@ private:
 
 	UPROPERTY()
 	const UWorldGridSettings* GridSettings;
+
 	TManagerPtr<IGridProjectionInterface> GridProjection;
 
 	UPROPERTY()
 	UWorld* CachedWorld;
+
+	UPROPERTY()
+	TArray<UHierarchicalInstancedStaticMeshComponent*> ProceduralMeshes;
+
+	TUniquePtr<FAsyncLoader> AssetLoader;
 };

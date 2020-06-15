@@ -54,6 +54,8 @@ private:
 
 	void OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints);
 
+	bool IsBuildingValid() const;
+
 	TUniquePtr<FAsyncLoader> AsyncLoader;
 
 	UPROPERTY()
