@@ -1,15 +1,25 @@
 #pragma once
 
-class FFoundationPoint
+#include "FoundationPoint.generated.h"
+
+USTRUCT()
+struct FFoundationPoint
 {
-	friend class AGhostRenderer;
+	GENERATED_BODY()
 
 public:
+
+	FFoundationPoint()
+		: Location()
+		, HitRes()
+	{};
 
 	FFoundationPoint(const FVector& InLocation)
 		: Location(InLocation)
 	{};
 
 	FVector Location;
+
+	UPROPERTY()
 	FHitResult HitRes;
 };

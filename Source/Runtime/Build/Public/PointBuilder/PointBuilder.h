@@ -28,6 +28,7 @@ public:
 		: BuildingData(nullptr)
 		, GridSettings(GetDefault<UWorldGridSettings>())
 		, Callback(nullptr)
+		, LastGeneratedPoints()
 		, GridProjection(*this)
 		, AsyncLoader(MakeUnique<FAsyncLoader>())
 	{};
@@ -97,6 +98,8 @@ protected:
 	const UWorldGridSettings* GridSettings;
 
 	TFunction<void(const TArray<FFoundationPoint>&)> Callback;
+
+	TArray<FFoundationPoint> LastGeneratedPoints;
 
 	TManagerPtr<IGridProjectionInterface> GridProjection;
 

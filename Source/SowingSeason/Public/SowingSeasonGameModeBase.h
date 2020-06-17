@@ -15,5 +15,4 @@ class ASowingSeasonGameModeBase : public AGameModeBase
 public:
 
 	ASowingSeasonGameModeBase(const FObjectInitializer& ObjectInitializer);
-
 };

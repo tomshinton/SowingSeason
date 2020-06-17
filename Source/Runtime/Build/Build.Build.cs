@@ -13,7 +13,8 @@ public class Build : ModuleRules
 			"Buildings",
             "Engine",
             "CoreUObject",
-			"WorldGrid"
+			"ObjectMessaging",
+			"WorldGrid",
         });
 		
 		PublicIncludePaths.AddRange(new string[] {"Runtime/Build/Public"});

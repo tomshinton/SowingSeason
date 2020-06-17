@@ -18,6 +18,7 @@ class IGridProjectionInterface;
 class IGhostRendererInterface;
 class UBuildingData;
 class UPointBuilder;
+struct FFoundationPoint;
 
 UCLASS( MinimalAPI, ClassGroup=(Build))
 class UBuildComponent : public UActorComponent
@@ -68,4 +69,6 @@ private:
 
 	UPROPERTY(Transient)
 	UPointBuilder* CurrentPointBuilder;
+
+	TArray<FFoundationPoint> LastGeneratedPoints;
 };

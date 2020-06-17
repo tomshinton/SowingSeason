@@ -5,7 +5,7 @@
 #include "GhostRendererInterface.generated.h"
 
 class UBuildingData;
-class FFoundationPoint;
+struct FFoundationPoint;
 
 UINTERFACE(MinimalAPI)
 class UGhostRendererInterface : public UInterface

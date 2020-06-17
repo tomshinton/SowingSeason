@@ -6,8 +6,11 @@
 
 #include "Runtime/Build/Public/BuildInterface.h"
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
+#include "Runtime/Build/Public/Events/BuildEvents.h"
 #include "Runtime/Build/Public/Ghost/GhostRenderer.h"
 #include "Runtime/Build/Public/PointBuilder/PointBuilderFunctions.h"
+
+#include <ObjectMessaging/Public/Sender/ObjectMessagingFunctions.h>
 
 DEFINE_LOG_CATEGORY_STATIC(BuildComponentLog, Log, Log)
 
@@ -26,6 +29,7 @@ UBuildComponent::UBuildComponent()
 	, GhostClass(nullptr)
 	, GhostRenderer()
 	, CurrentPointBuilder(nullptr)
+	, LastGeneratedPoints()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
@@ -137,6 +141,8 @@ void UBuildComponent::EndBuild()
 	{
 		UE_LOG(BuildComponentLog, Log, TEXT("Ending build of %s, can proceed to spawn building actual"), *BuildingData->NameReadable);
 
+		ObjectMessagingFunctions::SendMessage<FBuildCompleteEvent>(*GetOwner()->GetGameInstance(), FBuildCompleteEvent(*BuildingData, LastGeneratedPoints));
+
 		if (IsBuildingValid())
 		{
 			if (BuildingData->ShouldCancelBuildPostPlacement)
@@ -176,6 +182,7 @@ void UBuildComponent::RotateBuild()
 void UBuildComponent::OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints)
 {
 	GhostRenderer->UpdateRender(InNewPoints);
+	LastGeneratedPoints = InNewPoints;
 }
 
 bool UBuildComponent::IsBuildingValid() const

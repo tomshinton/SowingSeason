@@ -19,8 +19,9 @@ public class SowingSeason : ModuleRules
 			"Build",
 			"Buildings",
 			"Movement",
+			"ObjectMessaging",
 			"WorldGrid",
-			"UI"
+			"UI",
 		});
 	}
 }
