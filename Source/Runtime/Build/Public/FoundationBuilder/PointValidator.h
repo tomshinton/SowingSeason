@@ -3,7 +3,7 @@
 #include <Runtime/Core/Public/CoreMinimal.h>
 #include <Runtime/CoreUObject/Public/UObject/Object.h>
 
-#include "Runtime/Build/Public/Foundation/FoundationPoint.h"
+#include "Runtime/Build/Public/Foundation/Foundation.h"
 
 #include <Runtime/Engine/Public/WorldCollision.h>
 #include <Runtime/WorldGrid/Public/WorldGridSettings.h>
@@ -36,7 +36,7 @@ public:
 		});
 	};
 
-	void Run(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const TArray<FFoundationPoint>&)>& InCallback)
+	void Run(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const FFoundation&)>& InCallback)
 	{
 		Points = InPoints;
 		World = &InWorld;
@@ -105,7 +105,7 @@ private:
 	UPROPERTY()
 	UWorld* World;
 
-	TFunction<void(const TArray<FFoundationPoint>&)> Callback;
+	TFunction<void(const FFoundation&)> Callback;
 
 	UPROPERTY()
 	const UWorldGridSettings* GridSettings;

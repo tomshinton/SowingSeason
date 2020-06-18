@@ -19,4 +19,5 @@ protected:
 private:
 
 	void InitialiseGridLocationManager(UObject& InManager);
+	void InitialiseBuildingManager(UObject& InManager);
 };

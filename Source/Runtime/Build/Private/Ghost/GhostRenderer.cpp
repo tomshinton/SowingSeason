@@ -12,7 +12,7 @@ static TAutoConsoleVariable<int32> CVarDebugGhostRender(TEXT("GhostRenderer.Draw
 AGhostRenderer::AGhostRenderer(const FObjectInitializer& ObjectInitializer)
 	: SourceBuildingData(nullptr)
 	, BuildingClassCDO(nullptr)
-	, LastRenderedPoints()
+	, LastFoundation()
 	, GhostRoot(FVector::ZeroVector)
 	, GridSettings(GetDefault<UWorldGridSettings>())
 	, GridProjection(*this)
@@ -56,8 +56,8 @@ void AGhostRenderer::SetGhostInfo(const UBuildingData& InSourceBuildingData)
 
 				switch (InSourceBuildingData.BuildMode)
 				{
-				case EBuildMode::FireAndForget:
-					InitFireAndForgetGhost();
+				case EBuildMode::Single:
+					InitialiseSingleGhost();
 					break;
 				}
 			}
@@ -65,25 +65,14 @@ void AGhostRenderer::SetGhostInfo(const UBuildingData& InSourceBuildingData)
 	});
 }
 
-void AGhostRenderer::UpdateRender(const TArray<FFoundationPoint>& InPoints)
+void AGhostRenderer::UpdateRender(const FFoundation& InFoundation)
 {
-	LastRenderedPoints = InPoints;
+	LastFoundation = InFoundation;
 
 	for(UHierarchicalInstancedStaticMeshComponent* ProceduralMesh : ProceduralMeshes)
 	{
 		ProceduralMesh->SetWorldLocation(GhostRoot);
 	}
-
-#if !UE_BUILD_SHIPPING
-	if (CVarDebugGhostRender.GetValueOnAnyThread())
-	{
-		FlushPersistentDebugLines(CachedWorld);
-		for (const FFoundationPoint& Point : InPoints)
-		{
-			DrawDebugSphere(CachedWorld, Point.Location, GridSettings->GridCellSize * .5, 4.f, FColor::Green, true, -1, 0, 2.f);
-		}
-	}
-#endif //!UE_BUILD_SHIPPING
 }
 
 void AGhostRenderer::ClearGhost()
@@ -96,7 +85,7 @@ void AGhostRenderer::ClearGhost()
 	ProceduralMeshes.Empty();
 }
 
-void AGhostRenderer::InitFireAndForgetGhost()
+void AGhostRenderer::InitialiseSingleGhost()
 {
 
 }

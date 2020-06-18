@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Runtime/Build/Public/PointBuilder/PointBuilder.h"
-#include "Runtime/Build/Public/PointBuilder/PointValidator.h"
+#include "Runtime/Build/Public/FoundationBuilder/FoundationBuilder.h"
+#include "Runtime/Build/Public/FoundationBuilder/PointValidator.h"
 
 #include <Runtime/Buildings/Public/FootprintProviderInterface.h>
 #include <Runtime/Engine/Classes/Components/BoxComponent.h>
 
-#include "FootprintPointBuilder.generated.h"
+#include "FootprintFoundationBuilder.generated.h"
 
 DEFINE_LOG_CATEGORY_STATIC(FootprintPointBuilderLog, Log, Log)
 
@@ -17,13 +17,13 @@ namespace FootprintPointBuilderPrivate
 }
 
 UCLASS()
-class UFootprintPointBuilder : public UPointBuilder
+class UFootprintFoundationBuilder : public UFoundationBuilder
 {
 	GENERATED_BODY()
 
 public:
 
-	UFootprintPointBuilder()
+	UFootprintFoundationBuilder()
 		: FootprintProxy(nullptr)
 		, BuildingBounds()
 		, RawPointCountExtent(0)
@@ -68,7 +68,7 @@ public:
 
 					if (IsPointOnFootprint(NewVector))
 					{
-						Points.Emplace(NewVector);
+						Points.AddUnique(NewVector);
 					}
 				}
 			}

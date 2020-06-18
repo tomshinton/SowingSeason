@@ -30,11 +30,11 @@ private:
 
 	//IGhostInterface
 	virtual void SetGhostInfo(const UBuildingData& InSourceData) override;
-	virtual void UpdateRender(const TArray<FFoundationPoint>& InPoints) override;
+	virtual void UpdateRender(const FFoundation& InFoundation) override;
 	virtual void ClearGhost() override;
 	//~IGhostInterface
 
-	void InitFireAndForgetGhost();
+	void InitialiseSingleGhost();
 
 	void CopyCDOPrimitives(const UObject& InObjectToCopy);
 
@@ -44,7 +44,7 @@ private:
 	UPROPERTY(Transient)
 	UObject* BuildingClassCDO;
 
-	TArray<FFoundationPoint> LastRenderedPoints;
+	FFoundation LastFoundation;
 
 	FVector GhostRoot;
 

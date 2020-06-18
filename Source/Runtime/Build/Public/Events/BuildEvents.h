@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Runtime/Build/Public/Foundation/FoundationPoint.h"
+#include "Runtime/Build/Public/Foundation/Foundation.h"
 
 #include "BuildEvents.generated.h"
 
@@ -15,13 +15,13 @@ public:
 
 	FBuildCompleteEvent() {};
 
-	FBuildCompleteEvent(const UBuildingData& InBuildingData, const TArray<FFoundationPoint>& InGeneratedPoints)
+	FBuildCompleteEvent(const UBuildingData& InBuildingData, const FFoundation& InBuildingFoundation)
 		: BuildingData(&InBuildingData)
-		, GeneratedPoints(InGeneratedPoints)
+		, BuildingFoundation(InBuildingFoundation)
 	{};
 
 	UPROPERTY()
 	const UBuildingData* BuildingData;
 
-	TArray<FFoundationPoint> GeneratedPoints;
+	FFoundation BuildingFoundation;
 };

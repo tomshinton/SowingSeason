@@ -5,7 +5,7 @@
 UENUM()
 enum class EBuildMode : uint8 
 {
-	FireAndForget, 
+	Single, 
 	Linear, 
 	Grid
 };

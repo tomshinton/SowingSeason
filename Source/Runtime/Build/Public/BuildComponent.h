@@ -6,7 +6,7 @@
 #include <Runtime/Engine/Classes/Components/ActorComponent.h>
 
 #include "Runtime/Build/Public/BuildInterface.h"
-#include "Runtime/Build/Public/PointBuilder/PointBuilder.h"
+#include "Runtime/Build/Public/Foundation/Foundation.h"
 
 #include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
 #include <Runtime/Engine/Classes/GameFramework/ManagerFramework/ManagerPtr.h>
@@ -17,8 +17,7 @@ class AGhostRenderer;
 class IGridProjectionInterface;
 class IGhostRendererInterface;
 class UBuildingData;
-class UPointBuilder;
-struct FFoundationPoint;
+class UFoundationBuilder;
 
 UCLASS( MinimalAPI, ClassGroup=(Build))
 class UBuildComponent : public UActorComponent
@@ -53,7 +52,7 @@ private:
 
 	void RotateBuild();
 
-	void OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints);
+	void OnFoundationGenerated(const FFoundation& InNewPoints);
 
 	bool IsBuildingValid() const;
 
@@ -68,7 +67,7 @@ private:
 	TWeakInterfacePtr<IGhostRendererInterface> GhostRenderer;
 
 	UPROPERTY(Transient)
-	UPointBuilder* CurrentPointBuilder;
+	UFoundationBuilder* CurrentPointBuilder;
 
-	TArray<FFoundationPoint> LastGeneratedPoints;
+	FFoundation LastFoundation;
 };

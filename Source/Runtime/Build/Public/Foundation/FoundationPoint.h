@@ -18,6 +18,11 @@ public:
 		: Location(InLocation)
 	{};
 
+	bool operator==(const FFoundationPoint& InOtherPoint) const
+	{
+		return Location != InOtherPoint.Location;
+	}
+
 	FVector Location;
 
 	UPROPERTY()

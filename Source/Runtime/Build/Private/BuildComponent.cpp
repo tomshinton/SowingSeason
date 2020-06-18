@@ -8,7 +8,9 @@
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
 #include "Runtime/Build/Public/Events/BuildEvents.h"
 #include "Runtime/Build/Public/Ghost/GhostRenderer.h"
-#include "Runtime/Build/Public/PointBuilder/PointBuilderFunctions.h"
+#include "Runtime/Build/Public/Foundation/Foundation.h"
+#include "Runtime/Build/Public/FoundationBuilder/FoundationBuilderFunctions.h"
+#include "Runtime/Build/Public/FoundationBuilder/FoundationBuilder.h"
 
 #include <ObjectMessaging/Public/Sender/ObjectMessagingFunctions.h>
 
@@ -29,7 +31,7 @@ UBuildComponent::UBuildComponent()
 	, GhostClass(nullptr)
 	, GhostRenderer()
 	, CurrentPointBuilder(nullptr)
-	, LastGeneratedPoints()
+	, LastFoundation()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
@@ -100,15 +102,15 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 				{
 					GhostRenderer->SetGhostInfo(LoadedBuildingData);
 
-					CurrentPointBuilder = PointBuilderFunctions::GetBuilderForMode(*BuildingData, *this);
+					CurrentPointBuilder = FoundationBuilderFunctions::GetBuilderForMode(*BuildingData, *this);
 
 					if (CurrentPointBuilder != nullptr)
 					{
-						CurrentPointBuilder->Init(*BuildingData, [WeakThis](const TArray<FFoundationPoint>& GeneratedPoints)
+						CurrentPointBuilder->Init(*BuildingData, [WeakThis](const FFoundation& InGeneratedFoundation)
 						{
 							if (WeakThis.IsValid())
 							{
-								WeakThis->OnNewPointsGenerated(GeneratedPoints);
+								WeakThis->OnFoundationGenerated(InGeneratedFoundation);
 							}
 						});
 					}
@@ -141,7 +143,7 @@ void UBuildComponent::EndBuild()
 	{
 		UE_LOG(BuildComponentLog, Log, TEXT("Ending build of %s, can proceed to spawn building actual"), *BuildingData->NameReadable);
 
-		ObjectMessagingFunctions::SendMessage<FBuildCompleteEvent>(*GetOwner()->GetGameInstance(), FBuildCompleteEvent(*BuildingData, LastGeneratedPoints));
+		ObjectMessagingFunctions::SendMessage<FBuildCompleteEvent>(*GetOwner()->GetGameInstance(), FBuildCompleteEvent(*BuildingData, LastFoundation));
 
 		if (IsBuildingValid())
 		{
@@ -179,10 +181,10 @@ void UBuildComponent::RotateBuild()
 	}
 }
 
-void UBuildComponent::OnNewPointsGenerated(const TArray<FFoundationPoint>& InNewPoints)
+void UBuildComponent::OnFoundationGenerated(const FFoundation& InNewFoundation)
 {
-	GhostRenderer->UpdateRender(InNewPoints);
-	LastGeneratedPoints = InNewPoints;
+	GhostRenderer->UpdateRender(InNewFoundation);
+	LastFoundation = InNewFoundation;
 }
 
 bool UBuildComponent::IsBuildingValid() const

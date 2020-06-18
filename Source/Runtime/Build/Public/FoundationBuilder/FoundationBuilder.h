@@ -4,47 +4,47 @@
 #include <Runtime/CoreUObject/Public/UObject/Object.h>
 
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
-#include "Runtime/Build/Public/Foundation/FoundationPoint.h"
+#include "Runtime/Build/Public/Foundation/Foundation.h"
 
 #include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
 #include <Runtime/Engine/Classes/GameFramework/ManagerFramework/ManagerPtr.h>
 #include <Runtime/WorldGrid/Public/GridProjection/GridProjectionInterface.h>
 #include <Runtime/WorldGrid/Public/WorldGridSettings.h>
 
-#include "PointBuilder.generated.h"
+#include "FoundationBuilder.generated.h"
 
 #if !UE_BUILD_SHIPPING
 #include <Runtime/Engine/Public/DrawDebugHelpers.h>
 #endif //!UE_BUILD_SHIPPING
 
 UCLASS(MinimalAPI, ClassGroup = (Build))
-class UPointBuilder : public UObject
+class UFoundationBuilder : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
-	UPointBuilder()
+	UFoundationBuilder()
 		: BuildingData(nullptr)
 		, GridSettings(GetDefault<UWorldGridSettings>())
 		, Callback(nullptr)
-		, LastGeneratedPoints()
+		, LastFoundation()
 		, GridProjection(*this)
 		, AsyncLoader(MakeUnique<FAsyncLoader>())
 	{};
 
-	virtual void Init(const UBuildingData& InBuildingData, const TFunction<void(const TArray<FFoundationPoint>&)>& OnPointsGeneratedCallback)
+	virtual void Init(const UBuildingData& InBuildingData, const TFunction<void(const FFoundation&)>& OnPointsGeneratedCallback)
 	{
 		BuildingData = &InBuildingData;
 		Callback = OnPointsGeneratedCallback;
 
 		if (IGridProjectionInterface* GridProjectionInterface = GridProjection.Get())
 		{
-			GridProjectionInterface->GetOnRoundedPositionChanged().AddUObject(this, &UPointBuilder::UpdateMouseLocation);
+			GridProjectionInterface->GetOnRoundedPositionChanged().AddUObject(this, &UFoundationBuilder::UpdateMouseLocation);
 			CurrentMouseLocation = GridProjectionInterface->GetRoundedPositionUnderMouse();
 		}
 
-		AsyncLoader->RequestLoad<UClass>(BuildingData->BuildingClass, [WeakThis = TWeakObjectPtr<UPointBuilder>(this)](UClass& LoadedBuildingClass)
+		AsyncLoader->RequestLoad<UClass>(BuildingData->BuildingClass, [WeakThis = TWeakObjectPtr<UFoundationBuilder>(this)](UClass& LoadedBuildingClass)
 		{
 			if (WeakThis.IsValid())
 			{
@@ -73,13 +73,7 @@ public:
 
 	void StartBuild()
 	{
-		FlushPersistentDebugLines(GetWorld());
-
 		StartedLocation = CurrentMouseLocation;
-
-#if !UE_BUILD_SHIPPING
-		DrawDebugSphere(GetWorld(), StartedLocation, GridSettings->GridCellSize * 0.5f, 12.f, FColor::Red, false, 20.f);
-#endif //!UE_BUILD_SHIPPING
 	}
 
 	virtual void GenerateNewPoints() PURE_VIRTUAL(UPointBuilder::GenerateNewPoints, );
@@ -97,9 +91,9 @@ protected:
 	UPROPERTY(Transient)
 	const UWorldGridSettings* GridSettings;
 
-	TFunction<void(const TArray<FFoundationPoint>&)> Callback;
+	TFunction<void(const FFoundation&)> Callback;
 
-	TArray<FFoundationPoint> LastGeneratedPoints;
+	FFoundation LastFoundation;
 
 	TManagerPtr<IGridProjectionInterface> GridProjection;
 
