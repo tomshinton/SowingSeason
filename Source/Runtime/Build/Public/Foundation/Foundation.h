@@ -7,16 +7,20 @@ class FFoundation
 public:
 
 	FFoundation()
-		: Points()
+		: Rotation()
+		, Points()
 	{};
 
 	FFoundation(const TArray<FFoundationPoint>& InPoints)
-		: Points(InPoints)
+		: Rotation()
+		, Points(InPoints)
 	{};
 
-	void PushPoint(const FFoundationPoint& InNewPoint) { Points.AddUnique(InNewPoint); }
+	FFoundation(const TArray<FFoundationPoint>& InPoints, const TOptional<FRotator>& InRotation)
+		: Rotation(InRotation)
+		, Points(InPoints)
+	{};
 
-private:
-
+	TOptional<FRotator> Rotation;
 	TArray<FFoundationPoint> Points;
 };

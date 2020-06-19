@@ -10,6 +10,11 @@
 
 DEFINE_LOG_CATEGORY_STATIC(FootprintPointBuilderLog, Log, Log)
 
+namespace FootprintFoundationBuilderPrivate
+{
+	const FRotator RotationRate = FRotator(0.f, 45.f, 0.f);
+}
+
 namespace FootprintPointBuilderPrivate
 {
 	const uint8 RawPointCountPadding = 3;
@@ -74,7 +79,13 @@ public:
 			}
 
 			PointValidator = NewObject<UPointValidator>(this);
-			PointValidator->Run(Points, *GetWorld(), Callback);
+			PointValidator->Run(Points, *GetWorld(), [WeakThis = TWeakObjectPtr<UFootprintFoundationBuilder>(this)](const TArray<FFoundationPoint>& ValidatedPoints)
+			{
+				if (WeakThis.IsValid())
+				{
+					WeakThis->Callback(FFoundation(ValidatedPoints, WeakThis->CurrentRotation));
+				}
+			});
 		}
 	}
 
@@ -91,7 +102,9 @@ public:
 
 	void RotateBuild() override
 	{
-		FootprintProxy->AddWorldRotation(FQuat(FRotator(0.f, 45.f, 0.f)));
+		FootprintProxy->AddWorldRotation(FQuat(FootprintFoundationBuilderPrivate::RotationRate));
+		CurrentRotation += FootprintFoundationBuilderPrivate::RotationRate;
+
 		GenerateNewPoints();
 	}
 
@@ -111,4 +124,6 @@ private:
 
 	UPROPERTY()
 	UPointValidator* PointValidator;
+
+	FRotator CurrentRotation;
 };

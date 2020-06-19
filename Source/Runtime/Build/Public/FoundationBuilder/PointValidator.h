@@ -36,7 +36,7 @@ public:
 		});
 	};
 
-	void Run(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const FFoundation&)>& InCallback)
+	void Run(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const TArray<FFoundationPoint>&)>& InCallback)
 	{
 		Points = InPoints;
 		World = &InWorld;
@@ -105,7 +105,7 @@ private:
 	UPROPERTY()
 	UWorld* World;
 
-	TFunction<void(const FFoundation&)> Callback;
+	TFunction<void(const TArray<FFoundationPoint>&)> Callback;
 
 	UPROPERTY()
 	const UWorldGridSettings* GridSettings;

@@ -21,7 +21,7 @@ public:
 
 	ABuilding(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BuildingRoot;
 
 	UPROPERTY(VisibleAnywhere)

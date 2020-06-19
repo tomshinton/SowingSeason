@@ -72,6 +72,11 @@ void AGhostRenderer::UpdateRender(const FFoundation& InFoundation)
 	for(UHierarchicalInstancedStaticMeshComponent* ProceduralMesh : ProceduralMeshes)
 	{
 		ProceduralMesh->SetWorldLocation(GhostRoot);
+
+		if (InFoundation.Rotation.IsSet())
+		{
+			ProceduralMesh->SetWorldRotation(InFoundation.Rotation.GetValue());
+		}
 	}
 }
 
