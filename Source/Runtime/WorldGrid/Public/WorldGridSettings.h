@@ -35,4 +35,19 @@ public:
 	/** When rounding values, do we want to re-project the value onto the Projection Surface? This accounts for non-flat worlds/hills */
 	UPROPERTY(config, EditDefaultsOnly, Category = "Grid Interaction")
 	bool ReprojectRoundedValues;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "Ghost | Foundation")
+	FSoftObjectPath FoundationCellMesh;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "Ghost | Foundation")
+	FSoftObjectPath ValidFoundationCellMaterial;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "Ghost | Foundation")
+	FSoftObjectPath InValidFoundationCellMaterial;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "Ghost")
+	FSoftObjectPath ValidGhostMaterial;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "Ghost")
+	FSoftObjectPath InvalidGhostMaterial;
 };

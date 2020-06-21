@@ -48,8 +48,6 @@ public:
 			FootprintProxy = NewObject<UBoxComponent>(GetOuter());
 			FootprintProxy->SetBoxExtent(Bounds.BoxExtent * FVector(1.f, 1.f, 100.f));
 			FootprintProxy->RegisterComponent();
-
-			FootprintProxy->SetHiddenInGame(false);
 		}
 	}
 

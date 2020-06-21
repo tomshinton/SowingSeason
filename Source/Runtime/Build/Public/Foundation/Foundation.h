@@ -21,6 +21,19 @@ public:
 		, Points(InPoints)
 	{};
 
+	bool IsValidFoundation() const
+	{
+		for(const FFoundationPoint& Point : Points)
+		{
+			if (!Point.IsValid)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	TOptional<FRotator> Rotation;
 	TArray<FFoundationPoint> Points;
 };

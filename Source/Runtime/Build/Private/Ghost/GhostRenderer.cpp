@@ -9,17 +9,36 @@
 static TAutoConsoleVariable<int32> CVarDebugGhostRender(TEXT("GhostRenderer.DrawDebugGhost"), 0, TEXT("Draw GhostRenderer debug data"));
 #endif //!UE_BUILD_SHIPPING
 
+namespace GhostRendererPrivate
+{
+	const FName GhostRootComponentName = TEXT("GhostRoot");
+	const FName ValidFoundationCellsComponentName = TEXT("ValidFoundationCells");
+	const FName InvalidFoundationCellsComponentName = TEXT("InvalidFoundationCells");
+}
+
 AGhostRenderer::AGhostRenderer(const FObjectInitializer& ObjectInitializer)
-	: SourceBuildingData(nullptr)
+	: GhostRoot(ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, GhostRendererPrivate::GhostRootComponentName))
+	, ValidFoundationCells(ObjectInitializer.CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(this, GhostRendererPrivate::ValidFoundationCellsComponentName))
+	, InvalidFoundationCells(ObjectInitializer.CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(this, GhostRendererPrivate::InvalidFoundationCellsComponentName))
+	, ProceduralMeshes()
+	, SourceBuildingData(nullptr)
 	, BuildingClassCDO(nullptr)
+	, ValidGhostMaterial(nullptr)
+	, InvalidGhostMaterial(nullptr)
 	, LastFoundation()
-	, GhostRoot(FVector::ZeroVector)
+	, GhostRootLocation(FVector::ZeroVector)
 	, GridSettings(GetDefault<UWorldGridSettings>())
 	, GridProjection(*this)
 	, CachedWorld(nullptr)
 	, AssetLoader(MakeUnique<FAsyncLoader>())
 {
+	RootComponent = GhostRoot;
 
+	ValidFoundationCells->SetupAttachment(RootComponent);
+	ValidFoundationCells->bRenderCustomDepth = true;
+
+	InvalidFoundationCells->SetupAttachment(RootComponent);
+	ValidFoundationCells->bRenderCustomDepth = true;
 }
 
 void AGhostRenderer::BeginPlay()
@@ -35,10 +54,58 @@ void AGhostRenderer::BeginPlay()
 		{
 			if (WeakThis.IsValid())
 			{
-				GhostRoot = InNewLocation;
+				GhostRootLocation = InNewLocation;
 			}
 		});
 	}
+
+	InitialiseAsyncAssets();
+}
+
+void AGhostRenderer::InitialiseAsyncAssets()
+{
+	TWeakObjectPtr<AGhostRenderer> WeakThis = TWeakObjectPtr<AGhostRenderer>(this);
+
+	AssetLoader->RequestLoad<UStaticMesh>(GridSettings->FoundationCellMesh, [WeakThis, this](UStaticMesh& LoadedMesh)
+	{
+		if (WeakThis.IsValid())
+		{
+			ValidFoundationCells->SetStaticMesh(&LoadedMesh);
+			InvalidFoundationCells->SetStaticMesh(&LoadedMesh);
+
+			AssetLoader->RequestLoad<UMaterialInterface>(GridSettings->InValidFoundationCellMaterial, [WeakThis, this](UMaterialInterface& LoadedMaterial)
+			{
+				if (WeakThis.IsValid())
+				{
+					InvalidFoundationCells->SetMaterial(0, &LoadedMaterial);
+				}
+			});
+
+			AssetLoader->RequestLoad<UMaterialInterface>(GridSettings->ValidFoundationCellMaterial, [WeakThis, this](UMaterialInterface& LoadedMaterial)
+			{
+				if (WeakThis.IsValid())
+				{
+					ValidFoundationCells->SetMaterial(0, &LoadedMaterial);
+				}
+			});
+		}
+	});
+	
+	AssetLoader->RequestLoad<UMaterialInterface>(GridSettings->ValidGhostMaterial, [WeakThis](UMaterialInterface& LoadedMaterial)
+	{
+		if (WeakThis.IsValid())
+		{
+			WeakThis->ValidGhostMaterial = &LoadedMaterial;
+		}
+	});
+
+	AssetLoader->RequestLoad<UMaterialInterface>(GridSettings->InvalidGhostMaterial, [WeakThis](UMaterialInterface& LoadedMaterial)
+	{
+		if (WeakThis.IsValid())
+		{
+			WeakThis->InvalidGhostMaterial = &LoadedMaterial;
+		}
+	});
 }
 
 void AGhostRenderer::SetGhostInfo(const UBuildingData& InSourceBuildingData)
@@ -69,13 +136,51 @@ void AGhostRenderer::UpdateRender(const FFoundation& InFoundation)
 {
 	LastFoundation = InFoundation;
 
-	for(UHierarchicalInstancedStaticMeshComponent* ProceduralMesh : ProceduralMeshes)
-	{
-		ProceduralMesh->SetWorldLocation(GhostRoot);
+	UpdateProceduralMeshes();
+	UpdateFoundationRenderer();
+}
 
-		if (InFoundation.Rotation.IsSet())
+void AGhostRenderer::UpdateProceduralMeshes()
+{
+	const bool IsValid = LastFoundation.IsValidFoundation();
+
+	for (UHierarchicalInstancedStaticMeshComponent* ProceduralMesh : ProceduralMeshes)
+	{
+		ProceduralMesh->SetWorldLocation(GhostRootLocation);
+
+		if (LastFoundation.Rotation.IsSet())
 		{
-			ProceduralMesh->SetWorldRotation(InFoundation.Rotation.GetValue());
+			ProceduralMesh->SetWorldRotation(LastFoundation.Rotation.GetValue());
+		}
+
+		if (IsValid)
+		{
+			ProceduralMesh->SetMaterial(0, ValidGhostMaterial);
+		}
+		else
+		{
+			ProceduralMesh->SetMaterial(0, InvalidGhostMaterial);
+		}
+	}
+}
+
+void AGhostRenderer::UpdateFoundationRenderer()
+{
+	ValidFoundationCells->ClearInstances();
+	InvalidFoundationCells->ClearInstances();
+
+	const float PointSize = GridSettings->GridCellSize;
+	for (const FFoundationPoint& Point : LastFoundation.Points)
+	{
+		const FTransform CellTransform = FTransform(FQuat::Identity, Point.Location, FVector(PointSize));
+
+		if (Point.IsValid)
+		{
+			ValidFoundationCells->AddInstanceWorldSpace(CellTransform);
+		}
+		else
+		{
+			InvalidFoundationCells->AddInstanceWorldSpace(CellTransform);
 		}
 	}
 }
@@ -86,6 +191,9 @@ void AGhostRenderer::ClearGhost()
 	{
 		ProceduralMesh->ClearInstances();
 	}
+
+	InvalidFoundationCells->ClearInstances();
+	ValidFoundationCells->ClearInstances();
 
 	ProceduralMeshes.Empty();
 }
@@ -118,7 +226,7 @@ void AGhostRenderer::CopyCDOPrimitives(const UObject& InObjectToCopy)
 				{
 					UHierarchicalInstancedStaticMeshComponent* NewMesh = NewObject<UHierarchicalInstancedStaticMeshComponent>(this);
 					NewMesh->RegisterComponent();
-					NewMesh->SetWorldLocation(GhostRoot);
+					NewMesh->SetWorldLocation(GhostRootLocation);
 
 					NewMesh->SetStaticMesh(StaticPrim->GetStaticMesh());
 

@@ -27,6 +27,7 @@ public:
 private:
 
 	void BeginPlay() override;
+	void InitialiseAsyncAssets();
 
 	//IGhostInterface
 	virtual void SetGhostInfo(const UBuildingData& InSourceData) override;
@@ -34,9 +35,24 @@ private:
 	virtual void ClearGhost() override;
 	//~IGhostInterface
 
+	void UpdateProceduralMeshes();
+	void UpdateFoundationRenderer();
+
 	void InitialiseSingleGhost();
 
 	void CopyCDOPrimitives(const UObject& InObjectToCopy);
+
+	UPROPERTY()
+	USceneComponent* GhostRoot;
+
+	UPROPERTY()
+	UHierarchicalInstancedStaticMeshComponent* ValidFoundationCells;
+
+	UPROPERTY()
+	UHierarchicalInstancedStaticMeshComponent* InvalidFoundationCells;
+
+	UPROPERTY()
+	TArray<UHierarchicalInstancedStaticMeshComponent*> ProceduralMeshes;
 
 	UPROPERTY(Transient)
 	const UBuildingData* SourceBuildingData;
@@ -44,9 +60,15 @@ private:
 	UPROPERTY(Transient)
 	UObject* BuildingClassCDO;
 
+	UPROPERTY(Transient)
+	UMaterialInterface* ValidGhostMaterial;
+
+	UPROPERTY(Transient)
+	UMaterialInterface* InvalidGhostMaterial;
+
 	FFoundation LastFoundation;
 
-	FVector GhostRoot;
+	FVector GhostRootLocation;
 
 	UPROPERTY()
 	const UWorldGridSettings* GridSettings;
@@ -55,9 +77,6 @@ private:
 
 	UPROPERTY()
 	UWorld* CachedWorld;
-
-	UPROPERTY()
-	TArray<UHierarchicalInstancedStaticMeshComponent*> ProceduralMeshes;
 
 	TUniquePtr<FAsyncLoader> AssetLoader;
 };
