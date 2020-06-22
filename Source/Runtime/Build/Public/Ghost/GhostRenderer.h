@@ -38,8 +38,6 @@ private:
 	void UpdateProceduralMeshes();
 	void UpdateFoundationRenderer();
 
-	void InitialiseSingleGhost();
-
 	void CopyCDOPrimitives(const UObject& InObjectToCopy);
 
 	UPROPERTY()

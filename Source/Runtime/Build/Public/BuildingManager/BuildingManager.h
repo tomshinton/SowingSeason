@@ -16,7 +16,7 @@ class UBuildingManager : public UObject
 
 public:
 
-	BUILD_API void Init(const UWorld& InWorld);
+	BUILD_API void Init(UWorld& InWorld);
 
 private:
 
@@ -24,7 +24,7 @@ private:
 
 	void OnBuildingComplete(const FBuildCompleteEvent& InEv);
 
-	void TrySpawnSingleBuilding(const UBuildingData& InData, const FFoundation& InFoundation);
+	void TrySpawnSingleBuilding(const FBuildCompleteEvent& InEv);
 
 	UPROPERTY()
 	UWorld* World;

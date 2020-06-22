@@ -81,7 +81,7 @@ public:
 			{
 				if (WeakThis.IsValid())
 				{
-					WeakThis->Callback(FFoundation(ValidatedPoints, WeakThis->CurrentRotation));
+					WeakThis->Callback(FFoundation(ValidatedPoints, WeakThis->CurrentRotation, WeakThis->CurrentMouseLocation));
 				}
 			});
 		}

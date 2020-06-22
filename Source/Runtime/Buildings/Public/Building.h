@@ -10,7 +10,7 @@
 
 class USceneComponent;
 
-UCLASS()
+UCLASS(MinimalAPI)
 class ABuilding : public AActor
 	, public IFootprintProvider
 

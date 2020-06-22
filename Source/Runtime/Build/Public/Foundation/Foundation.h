@@ -7,17 +7,20 @@ class FFoundation
 public:
 
 	FFoundation()
-		: Rotation()
+		: Location()
+		, Rotation()
 		, Points()
 	{};
 
 	FFoundation(const TArray<FFoundationPoint>& InPoints)
-		: Rotation()
+		: Location()
+		, Rotation()
 		, Points(InPoints)
 	{};
 
-	FFoundation(const TArray<FFoundationPoint>& InPoints, const TOptional<FRotator>& InRotation)
-		: Rotation(InRotation)
+	FFoundation(const TArray<FFoundationPoint>& InPoints, const TOptional<FRotator>& InRotation, const FVector& InLocation)
+		: Location(InLocation)
+		, Rotation(InRotation)
 		, Points(InPoints)
 	{};
 
@@ -34,6 +37,13 @@ public:
 		return true;
 	}
 
+	FTransform Transform() const
+	{
+		return FTransform(Rotation.IsSet() ? Rotation.GetValue() : FRotator::ZeroRotator, Location, FVector(1.f));
+	}
+
+	FVector Location;
 	TOptional<FRotator> Rotation;
+
 	TArray<FFoundationPoint> Points;
 };

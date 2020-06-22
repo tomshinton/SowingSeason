@@ -120,13 +120,6 @@ void AGhostRenderer::SetGhostInfo(const UBuildingData& InSourceBuildingData)
 			{
 				WeakThis->BuildingClassCDO = LoadedCDO;
 				WeakThis->CopyCDOPrimitives(*LoadedCDO);
-
-				switch (InSourceBuildingData.BuildMode)
-				{
-				case EBuildMode::Single:
-					InitialiseSingleGhost();
-					break;
-				}
 			}
 		}
 	});
@@ -196,11 +189,6 @@ void AGhostRenderer::ClearGhost()
 	ValidFoundationCells->ClearInstances();
 
 	ProceduralMeshes.Empty();
-}
-
-void AGhostRenderer::InitialiseSingleGhost()
-{
-
 }
 
 void AGhostRenderer::CopyCDOPrimitives(const UObject& InObjectToCopy)
