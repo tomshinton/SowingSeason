@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Runtime/Build/Public/FoundationBuilder/FootprintFoundationBuilder.h"
+#include "Runtime/Build/Public/FoundationBuilder/LinearFoundationBuilder.h"
 
 DEFINE_LOG_CATEGORY_STATIC(PointBuilderFunctionsLog, Log, Log)
 
@@ -17,6 +18,7 @@ namespace FoundationBuilderFunctions
 			UE_LOG(PointBuilderFunctionsLog, Warning, TEXT("No Point Builder hooked up for Grid buildings"));
 			break;
 		case EBuildMode::Linear:
+			return NewObject<ULinearFoundationBuilder>(&InOwner, ULinearFoundationBuilder::StaticClass());
 			UE_LOG(PointBuilderFunctionsLog, Warning, TEXT("No Point Builder hooked up for Linear buildings"));
 			break;
 		}

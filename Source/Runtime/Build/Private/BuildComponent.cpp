@@ -30,7 +30,7 @@ UBuildComponent::UBuildComponent()
 	, BuildingData(nullptr)
 	, GhostClass(nullptr)
 	, GhostRenderer()
-	, CurrentPointBuilder(nullptr)
+	, CurrentFoundationBuilder(nullptr)
 	, LastFoundation()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -102,11 +102,11 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 				{
 					GhostRenderer->SetGhostInfo(LoadedBuildingData);
 
-					CurrentPointBuilder = FoundationBuilderFunctions::GetBuilderForMode(*BuildingData, *this);
+					CurrentFoundationBuilder = FoundationBuilderFunctions::GetBuilderForMode(*BuildingData, *this);
 
-					if (CurrentPointBuilder != nullptr)
+					if (CurrentFoundationBuilder != nullptr)
 					{
-						CurrentPointBuilder->Init(*BuildingData, [WeakThis](const FFoundation& InGeneratedFoundation)
+						CurrentFoundationBuilder->Init(*BuildingData, [WeakThis](const FFoundation& InGeneratedFoundation)
 						{
 							if (WeakThis.IsValid())
 							{
@@ -127,12 +127,10 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 void UBuildComponent::StartBuild()
 {
 	if (BuildingData != nullptr)
-	{
-		UE_LOG(BuildComponentLog, Log, TEXT("Starting build of %s, starting point generation"), *BuildingData->NameReadable);
-	
-		if (CurrentPointBuilder != nullptr)
+	{	
+		if (CurrentFoundationBuilder != nullptr)
 		{
-			CurrentPointBuilder->StartBuild();
+			CurrentFoundationBuilder->StartBuild();
 		}
 	}
 }
@@ -141,16 +139,21 @@ void UBuildComponent::EndBuild()
 {
 	if (BuildingData != nullptr)
 	{
-		UE_LOG(BuildComponentLog, Log, TEXT("Ending build of %s, can proceed to spawn building actual"), *BuildingData->NameReadable);
-
-		ObjectMessagingFunctions::SendMessage<FBuildCompleteEvent>(*GetOwner()->GetGameInstance(), FBuildCompleteEvent(*BuildingData, LastFoundation));
-
-		if (IsBuildingValid())
+		if (CurrentFoundationBuilder != nullptr)
 		{
-			if (BuildingData->ShouldCancelBuildPostPlacement)
+			CurrentFoundationBuilder->EndBuild();
+
+			ObjectMessagingFunctions::SendMessage<FBuildCompleteEvent>(*GetOwner()->GetGameInstance(), FBuildCompleteEvent(*BuildingData, LastFoundation));
+
+			if (IsBuildingValid())
 			{
-				CancelBuild();
+				if (BuildingData->ShouldCancelBuildPostPlacement)
+				{
+					CancelBuild();
+				}
 			}
+
+			GhostRenderer->ClearGhost();
 		}
 	}
 }
@@ -159,25 +162,23 @@ void UBuildComponent::CancelBuild()
 {
 	if (BuildingData != nullptr)
 	{
-		UE_LOG(BuildComponentLog, Log, TEXT("Cancelling build of %s, building can be built again"), *BuildingData->NameReadable);
-
-		if (CurrentPointBuilder != nullptr)
+		if (CurrentFoundationBuilder != nullptr)
 		{
-			CurrentPointBuilder->Teardown();
+			CurrentFoundationBuilder->Teardown();
 
-			CurrentPointBuilder = nullptr;
+			CurrentFoundationBuilder = nullptr;
 			BuildingData = nullptr;
+	
+			GhostRenderer->ClearGhost();
 		}
-
-		GhostRenderer->ClearGhost();
 	}
 }
 
 void UBuildComponent::RotateBuild()
 {
-	if (CurrentPointBuilder != nullptr)
+	if (CurrentFoundationBuilder != nullptr)
 	{
-		CurrentPointBuilder->RotateBuild();
+		CurrentFoundationBuilder->RotateBuild();
 	}
 }
 

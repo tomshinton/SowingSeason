@@ -32,7 +32,6 @@ public:
 		: FootprintProxy(nullptr)
 		, BuildingBounds()
 		, RawPointCountExtent(0)
-		, PointValidator(nullptr)
 	{};
 
 	void InitialiseFootprintPointBuilder()
@@ -76,7 +75,6 @@ public:
 				}
 			}
 
-			PointValidator = NewObject<UPointValidator>(this);
 			PointValidator->Run(Points, *GetWorld(), [WeakThis = TWeakObjectPtr<UFootprintFoundationBuilder>(this)](const TArray<FFoundationPoint>& ValidatedPoints)
 			{
 				if (WeakThis.IsValid())
@@ -93,9 +91,6 @@ public:
 
 		FootprintProxy->UnregisterComponent();
 		FootprintProxy = nullptr;
-
-		PointValidator->Stop();
-		PointValidator = nullptr;
 	}
 
 	void RotateBuild() override
@@ -119,9 +114,6 @@ private:
 
 	TOptional<float> BuildingBounds;
 	uint8 RawPointCountExtent;
-
-	UPROPERTY()
-	UPointValidator* PointValidator;
 
 	FRotator CurrentRotation;
 };

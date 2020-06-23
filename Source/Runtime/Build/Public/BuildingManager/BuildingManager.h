@@ -25,6 +25,7 @@ private:
 	void OnBuildingComplete(const FBuildCompleteEvent& InEv);
 
 	void TrySpawnSingleBuilding(const FBuildCompleteEvent& InEv);
+	void TrySpawnLinearBuildings(const FBuildCompleteEvent& InEv);
 
 	UPROPERTY()
 	UWorld* World;

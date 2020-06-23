@@ -5,6 +5,7 @@
 
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"
 #include "Runtime/Build/Public/Foundation/Foundation.h"
+#include "Runtime/Build/Public/FoundationBuilder/PointValidator.h"
 
 #include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
 #include <Runtime/Engine/Classes/GameFramework/ManagerFramework/ManagerPtr.h>
@@ -27,6 +28,7 @@ public:
 	UFoundationBuilder()
 		: BuildingData(nullptr)
 		, GridSettings(GetDefault<UWorldGridSettings>())
+		, PointValidator(nullptr)
 		, Callback(nullptr)
 		, LastFoundation()
 		, GridProjection(*this)
@@ -55,6 +57,8 @@ public:
 				}
 			}
 		});
+
+		PointValidator = NewObject<UPointValidator>(this);
 	};
 
 	virtual void Teardown()
@@ -62,6 +66,12 @@ public:
 		if (IGridProjectionInterface* GridProjectionInterface = GridProjection.Get())
 		{
 			GridProjectionInterface->GetOnRoundedPositionChanged().RemoveAll(this);
+		}
+
+		if (PointValidator != nullptr)
+		{
+			PointValidator->Stop();
+			PointValidator = nullptr;
 		}
 	};
 	
@@ -73,7 +83,13 @@ public:
 
 	void StartBuild()
 	{
+		IsCurrentlyBuilding = true;
 		StartedLocation = CurrentMouseLocation;
+	}
+
+	void EndBuild()
+	{
+		IsCurrentlyBuilding = false;
 	}
 
 	virtual void GenerateNewPoints() PURE_VIRTUAL(UPointBuilder::GenerateNewPoints, );
@@ -81,6 +97,8 @@ public:
 	virtual void RotateBuild() {};
 
 protected:
+
+	bool IsCurrentlyBuilding;
 
 	UPROPERTY(Transient)
 	const UBuildingData* BuildingData;
@@ -90,6 +108,9 @@ protected:
 	
 	UPROPERTY(Transient)
 	const UWorldGridSettings* GridSettings;
+
+	UPROPERTY()
+	UPointValidator* PointValidator;
 
 	TFunction<void(const FFoundation&)> Callback;
 

@@ -38,6 +38,8 @@ public:
 
 	void Run(const TArray<FFoundationPoint>& InPoints, UWorld& InWorld, const TFunction<void(const TArray<FFoundationPoint>&)>& InCallback)
 	{
+		Requests.Empty();
+
 		Points = InPoints;
 		World = &InWorld;
 		Callback = InCallback;
@@ -98,6 +100,7 @@ public:
 
 private:
 
+	UPROPERTY()
 	TArray<FFoundationPoint> Points;
 
 	TMap<FTraceHandle, FFoundationPoint> Requests;

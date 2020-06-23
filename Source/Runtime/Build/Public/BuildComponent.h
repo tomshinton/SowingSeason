@@ -67,7 +67,7 @@ private:
 	TWeakInterfacePtr<IGhostRendererInterface> GhostRenderer;
 
 	UPROPERTY(Transient)
-	UFoundationBuilder* CurrentPointBuilder;
+	UFoundationBuilder* CurrentFoundationBuilder;
 
 	FFoundation LastFoundation;
 };

@@ -48,6 +48,7 @@ void UBuildingManager::OnBuildingComplete(const FBuildCompleteEvent& InEv)
 	case EBuildMode::Grid:
 		break;
 	case EBuildMode::Linear:
+		TrySpawnLinearBuildings(InEv);
 		break;
 	}
 }
@@ -59,5 +60,18 @@ void UBuildingManager::TrySpawnSingleBuilding(const FBuildCompleteEvent& InEv)
 #if WITH_EDITOR
 		SpawnedBuilding->SetFolderPath(BuildingManagerPrivate::BuildingFolderPath);
 #endif //WITH_EDITOR
+	}
+}
+
+void UBuildingManager::TrySpawnLinearBuildings(const FBuildCompleteEvent& InEv)
+{
+	for (const FFoundationPoint& Point : InEv.BuildingFoundation.Points)
+	{
+		if (ABuilding* SpawnedBuilding = World->SpawnActor<ABuilding>(InEv.BuildingData->BuildingClass.ResolveClass(), FTransform(FRotator::ZeroRotator, Point.Location, FVector(1.f))))
+		{
+#if WITH_EDITOR
+			SpawnedBuilding->SetFolderPath(BuildingManagerPrivate::BuildingFolderPath);
+#endif //WITH_EDITOR
+		}
 	}
 }
