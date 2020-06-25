@@ -24,10 +24,7 @@ public:
 	FSoftClassPath BuildingClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ghost")
-	bool UseStaticGhostVisual;
-
-	UPROPERTY(EditDefaultsOnly, meta = (AllowedClass = StaticMesh), Category = "Ghost")
-	FSoftObjectPath GhostVisual;
+	bool UseProceduralGhostVisual;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Build Meta")
 	bool ShouldCancelBuildPostPlacement;

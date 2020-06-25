@@ -110,6 +110,9 @@ void AGhostRenderer::InitialiseAsyncAssets()
 
 void AGhostRenderer::SetGhostInfo(const UBuildingData& InSourceBuildingData)
 {
+	//Clear the ghost here - this function acts as a re-init function for a new build's build process
+	ClearGhost();
+
 	SourceBuildingData = &InSourceBuildingData;
 
 	AssetLoader->RequestLoad<UClass>(InSourceBuildingData.BuildingClass, [WeakThis = TWeakObjectPtr<AGhostRenderer>(this), &InSourceBuildingData, this](UClass& LoadedBuildingClass)
@@ -119,7 +122,11 @@ void AGhostRenderer::SetGhostInfo(const UBuildingData& InSourceBuildingData)
 			if (UObject* LoadedCDO = LoadedBuildingClass.GetDefaultObject())
 			{
 				WeakThis->BuildingClassCDO = LoadedCDO;
-				WeakThis->CopyCDOPrimitives(*LoadedCDO);
+
+				if (InSourceBuildingData.UseProceduralGhostVisual)
+				{
+					WeakThis->CopyCDOPrimitives(*LoadedCDO);
+				}
 			}
 		}
 	});
@@ -129,7 +136,11 @@ void AGhostRenderer::UpdateRender(const FFoundation& InFoundation)
 {
 	LastFoundation = InFoundation;
 
-	UpdateProceduralMeshes();
+	if (SourceBuildingData->UseProceduralGhostVisual)
+	{
+		UpdateProceduralMeshes();
+	}
+
 	UpdateFoundationRenderer();
 }
 
@@ -187,8 +198,6 @@ void AGhostRenderer::ClearGhost()
 
 	InvalidFoundationCells->ClearInstances();
 	ValidFoundationCells->ClearInstances();
-
-	ProceduralMeshes.Empty();
 }
 
 void AGhostRenderer::CopyCDOPrimitives(const UObject& InObjectToCopy)

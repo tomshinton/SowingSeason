@@ -16,6 +16,11 @@
 
 DEFINE_LOG_CATEGORY_STATIC(BuildComponentLog, Log, Log)
 
+#if !UE_BUILD_SHIPPING
+#include <Runtime/Engine/Public/DrawDebugHelpers.h>
+static TAutoConsoleVariable<int32> CVarShowNumFoundationBuilders(TEXT("Build.ShowNumFoundationBuilders"), 0, TEXT("Toggle readout of how many foundation builders are running at any one time"));
+#endif //!UE_BUILD_SHIPPING
+
 namespace BuildComponentBindings
 {
 	const FName StartBuildBinding = TEXT("StartBuild");
@@ -34,7 +39,7 @@ UBuildComponent::UBuildComponent()
 	, LastFoundation()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	PrimaryComponentTick.bStartWithTickEnabled = false;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
 void UBuildComponent::BeginPlay()
@@ -59,6 +64,23 @@ void UBuildComponent::BeginPlay()
 void UBuildComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+#if !UE_BUILD_SHIPPING
+	if (CVarShowNumFoundationBuilders.GetValueOnAnyThread())
+	{
+		uint8 NumBuilders = 0;
+		uint8 NumPendingKill = 0;
+		for (TObjectIterator<UFoundationBuilder> Itr; Itr; ++Itr)
+		{
+			if (UFoundationBuilder* Builder = *Itr)
+			{
+				++NumBuilders;
+			}
+		}
+
+		GEngine->AddOnScreenDebugMessage(1, 1, FColor::White, FString::Printf(TEXT("Currently active Foundation Builders: %i"), NumBuilders));
+	}
+#endif //!UE_BUILD_SHIPPING
 }
 
 void UBuildComponent::SetupComponentInputBindings(UInputComponent& PlayerInputComponent)
@@ -95,13 +117,16 @@ void UBuildComponent::StartBuildFromClass(const FSoftObjectPath& InBuildingData)
 		{
 			if (WeakThis.IsValid())
 			{
-				UE_LOG(BuildComponentLog, Log, TEXT("Loaded Building Data for %s"), *LoadedBuildingData.GetName());
 				WeakThis->BuildingData = &LoadedBuildingData;
+
+				UE_LOG(BuildComponentLog, Log, TEXT("Loaded Building Data for %s - resetting build component and ghost"), *LoadedBuildingData.GetName());
+
+				LastFoundation = FFoundation();
+				ResetFoundationBuilder();
 				
 				if (GhostRenderer.IsValid())
 				{
 					GhostRenderer->SetGhostInfo(LoadedBuildingData);
-
 					CurrentFoundationBuilder = FoundationBuilderFunctions::GetBuilderForMode(*BuildingData, *this);
 
 					if (CurrentFoundationBuilder != nullptr)
@@ -152,8 +177,6 @@ void UBuildComponent::EndBuild()
 					CancelBuild();
 				}
 			}
-
-			GhostRenderer->ClearGhost();
 		}
 	}
 }
@@ -164,9 +187,8 @@ void UBuildComponent::CancelBuild()
 	{
 		if (CurrentFoundationBuilder != nullptr)
 		{
-			CurrentFoundationBuilder->Teardown();
+			ResetFoundationBuilder();
 
-			CurrentFoundationBuilder = nullptr;
 			BuildingData = nullptr;
 	
 			GhostRenderer->ClearGhost();
@@ -191,4 +213,13 @@ void UBuildComponent::OnFoundationGenerated(const FFoundation& InNewFoundation)
 bool UBuildComponent::IsBuildingValid() const
 {
 	return true;
+}
+
+void UBuildComponent::ResetFoundationBuilder()
+{
+	if (CurrentFoundationBuilder != nullptr)
+	{
+		CurrentFoundationBuilder->Teardown();
+		CurrentFoundationBuilder = nullptr;
+	}
 }

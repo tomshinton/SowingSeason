@@ -4,6 +4,7 @@
 #include "Runtime/Build/Public/Events/BuildEvents.h"
 
 #include <Runtime/Buildings/Public/Building.h>
+#include <Runtime/Buildings/Public/LinkableBuilding.h>
 
 #include <ObjectMessaging/Public/Listener/ObjectMessagingListenerInterface.h>
 
@@ -67,7 +68,7 @@ void UBuildingManager::TrySpawnLinearBuildings(const FBuildCompleteEvent& InEv)
 {
 	for (const FFoundationPoint& Point : InEv.BuildingFoundation.Points)
 	{
-		if (ABuilding* SpawnedBuilding = World->SpawnActor<ABuilding>(InEv.BuildingData->BuildingClass.ResolveClass(), FTransform(FRotator::ZeroRotator, Point.Location, FVector(1.f))))
+		if (ALinkableBuilding* SpawnedBuilding = World->SpawnActor<ALinkableBuilding>(InEv.BuildingData->BuildingClass.ResolveClass(), FTransform(FRotator::ZeroRotator, Point.Location, FVector(1.f))))
 		{
 #if WITH_EDITOR
 			SpawnedBuilding->SetFolderPath(BuildingManagerPrivate::BuildingFolderPath);

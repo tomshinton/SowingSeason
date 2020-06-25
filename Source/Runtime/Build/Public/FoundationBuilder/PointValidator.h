@@ -72,6 +72,8 @@ public:
 		}
 
 		Requests.Empty();
+
+		Callback = nullptr;
 	}
 
 	void OnTraceComplete(const FTraceHandle& Handle, FTraceDatum& Data)

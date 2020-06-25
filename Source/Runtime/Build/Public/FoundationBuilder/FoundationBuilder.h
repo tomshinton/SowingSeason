@@ -73,6 +73,8 @@ public:
 			PointValidator->Stop();
 			PointValidator = nullptr;
 		}
+
+		Callback = nullptr;
 	};
 	
 	void UpdateMouseLocation(const FVector& InNewLocation, const FVector& InOldLocation)
@@ -92,7 +94,7 @@ public:
 		IsCurrentlyBuilding = false;
 	}
 
-	virtual void GenerateNewPoints() PURE_VIRTUAL(UPointBuilder::GenerateNewPoints, );
+	virtual void GenerateNewPoints() PURE_VIRTUAL(UFoundationBuilder::GenerateNewPoints, );
 
 	virtual void RotateBuild() {};
 

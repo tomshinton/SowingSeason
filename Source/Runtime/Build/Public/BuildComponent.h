@@ -56,6 +56,8 @@ private:
 
 	bool IsBuildingValid() const;
 
+	void ResetFoundationBuilder();
+
 	TUniquePtr<FAsyncLoader> AsyncLoader;
 
 	UPROPERTY()
