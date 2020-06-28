@@ -28,7 +28,7 @@ public:
 	{
 		for(const FFoundationPoint& Point : Points)
 		{
-			if (!Point.IsValid)
+			if (!Point.IsValid())
 			{
 				return false;
 			}

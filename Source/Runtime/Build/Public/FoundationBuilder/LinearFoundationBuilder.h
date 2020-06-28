@@ -3,9 +3,6 @@
 #include "Runtime/Build/Public/FoundationBuilder/FoundationBuilder.h"
 #include "Runtime/Build/Public/FoundationBuilder/PointValidator.h"
 
-#include <Runtime/NavigationSystem/Public/NavigationPath.h>
-#include <Runtime/NavigationSystem/Public/NavigationSystem.h>
-
 #include "LinearFoundationBuilder.generated.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LinearPointBuilderLog, Log, Log)
@@ -26,13 +23,7 @@ public:
 
 		if (IsCurrentlyBuilding)
 		{
-			BuildingData->UseNavigationBuilding ? BuildNavigable(Points) : BuildLinear(Points);
-
-			FlushPersistentDebugLines(GetWorld());
-			for (FFoundationPoint& Point : Points)
-			{
-				DrawDebugSphere(GetWorld(), Point.Location, 64.f, 4, FColor::White, true, 20.f);
-			}
+			BuildLinear(Points);
 		}
 		else
 		{
@@ -48,20 +39,6 @@ public:
 					WeakThis->Callback(FFoundation(ValidatedPoints));
 				}
 			});
-		}
-	}
-
-	void BuildNavigable(TArray<FFoundationPoint>& OutPoints)
-	{
-		if (UWorld* World = GetWorld())
-		{
-			if (UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(World))
-			{
-				if (UNavigationPath* Path = NavSys->FindPathToLocationSynchronously(World, StartedLocation, CurrentMouseLocation))
-				{
-					OutPoints.Append(Path->PathPoints);
-				}
-			}
 		}
 	}
 

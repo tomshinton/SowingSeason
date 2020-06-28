@@ -14,7 +14,6 @@ public class Build : ModuleRules
             "Engine",
             "CoreUObject",
 			"ObjectMessaging",
-			"NavigationSystem",
 			"WorldGrid",
         });
 		

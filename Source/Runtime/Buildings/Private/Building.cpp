@@ -4,6 +4,8 @@ namespace BuildingPrivate
 {
 	const FName BuildingRootName = TEXT("BuildingRoot");
 	const FName BuildingMeshName = TEXT("BuildingMesh");
+
+	const FName BuildingCollisionProfileName = TEXT("Building");
 }
 
 ABuilding::ABuilding(const FObjectInitializer& ObjectInitializer)
@@ -14,6 +16,7 @@ ABuilding::ABuilding(const FObjectInitializer& ObjectInitializer)
 	RootComponent = BuildingRoot;
 
 	BuildingMesh->SetupAttachment(BuildingRoot);
+	BuildingMesh->SetCollisionProfileName(BuildingPrivate::BuildingCollisionProfileName);
 }
 
 const UPrimitiveComponent& ABuilding::GetFootprintReference() const

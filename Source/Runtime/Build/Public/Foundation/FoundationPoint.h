@@ -2,6 +2,8 @@
 
 #include "FoundationPoint.generated.h"
 
+enum class EPolicyFailReason : uint8;
+
 USTRUCT()
 struct FFoundationPoint
 {
@@ -12,13 +14,13 @@ public:
 	FFoundationPoint()
 		: Location()
 		, HitRes()
-		, IsValid(true)
+		, PolicyFailReasons()
 	{};
 
 	FFoundationPoint(const FVector& InLocation)
 		: Location(InLocation)
 		, HitRes()
-		, IsValid(true)
+		, PolicyFailReasons()
 	{};
 
 	bool operator==(const FFoundationPoint& InOtherPoint) const
@@ -26,10 +28,15 @@ public:
 		return Location == InOtherPoint.Location;
 	}
 
+	bool IsValid() const 
+	{
+		return PolicyFailReasons.Num() == 0;
+	}
+
 	FVector Location;
 
 	UPROPERTY()
 	FHitResult HitRes;
 
-	bool IsValid;
+	TArray<EPolicyFailReason> PolicyFailReasons;
 };

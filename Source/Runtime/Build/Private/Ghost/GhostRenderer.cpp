@@ -178,7 +178,7 @@ void AGhostRenderer::UpdateFoundationRenderer()
 	{
 		const FTransform CellTransform = FTransform(FQuat::Identity, Point.Location, FVector(PointSize));
 
-		if (Point.IsValid)
+		if (Point.IsValid())
 		{
 			ValidFoundationCells->AddInstanceWorldSpace(CellTransform);
 		}
