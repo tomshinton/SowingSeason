@@ -16,12 +16,13 @@ public class SowingSeason : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
+			"AICore",
 			"Build",
 			"Buildings",
 			"Movement",
 			"ObjectMessaging",
 			"WorldGrid",
-			"UI",
+			"UI"
 		});
 	}
 }
