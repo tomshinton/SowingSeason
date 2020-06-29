@@ -5,7 +5,9 @@
 
 #include "BuildingManager.generated.h"
 
+struct FConstructionCompleteEvent;
 struct FBuildCompleteEvent;
+
 class FFoundation;
 class UBuildingData;
 

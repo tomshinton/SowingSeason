@@ -25,3 +25,19 @@ public:
 
 	FFoundation BuildingFoundation;
 };
+
+USTRUCT()
+struct FConstructionCompleteEvent
+{
+	GENERATED_BODY()
+
+public:
+
+	FConstructionCompleteEvent() {};
+
+	FConstructionCompleteEvent(const FBuildCompleteEvent& InSourceBuildEvent)
+		: SourceBuildEvent(InSourceBuildEvent)
+	{};
+
+	FBuildCompleteEvent SourceBuildEvent;
+};

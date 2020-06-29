@@ -20,6 +20,10 @@ public:
 	USowingSeasonCheatManager();
 
 	/** Trigger building of a class from the given path */
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, Category = "Building")
 	void StartBuildingFromClassPath(const FSoftObjectPath& InClassToBuild);
+
+	/** Update all current construction projects by the given value */
+	UFUNCTION(Exec, Category = "Construction")
+	void ProgressAllConstructionRequests(const float InAmount);
 };

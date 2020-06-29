@@ -19,6 +19,7 @@ public class SowingSeason : ModuleRules
 			"AICore",
 			"Build",
 			"Buildings",
+			"Construction",
 			"Movement",
 			"ObjectMessaging",
 			"WorldGrid",

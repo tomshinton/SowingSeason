@@ -6,8 +6,6 @@
 
 #include "BuildingData.generated.h"
 
-class FPointBuilder;
-
 UCLASS()
 class UBuildingData : public UDataAsset
 {
@@ -40,4 +38,7 @@ public:
 	/** Human readable name for this building, useful for debugging*/
 	UPROPERTY(EditDefaultsOnly)
 	FString NameReadable;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Construction")
+	FSoftObjectPath ConstructionData;
 };	

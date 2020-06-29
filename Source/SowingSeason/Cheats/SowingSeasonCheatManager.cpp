@@ -2,7 +2,9 @@
 
 #include "SowingSeason/Cheats/SowingSeasonCheatManager.h"
 
+#include <ObjectMessaging/Public/Sender/ObjectMessagingFunctions.h>
 #include <Runtime/Build/Public/BuildInterface.h>
+#include <Runtime/Construction/Public/Events/ConstructionEvents.h>
 
 USowingSeasonCheatManager::USowingSeasonCheatManager()
 {
@@ -15,4 +17,9 @@ void USowingSeasonCheatManager::StartBuildingFromClassPath(const FSoftObjectPath
 	{
 		BuildInterface->StartBuildFromClass(InClassToBuild);
 	}
+}
+
+void USowingSeasonCheatManager::ProgressAllConstructionRequests(const float InAmount)
+{
+	ObjectMessagingFunctions::SendMessage<FUpdateConstructionRequest>(*GetWorld()->GetGameInstance(), FUpdateConstructionRequest(InAmount));
 }

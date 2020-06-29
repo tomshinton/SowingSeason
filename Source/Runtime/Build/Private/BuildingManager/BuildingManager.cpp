@@ -29,11 +29,11 @@ void UBuildingManager::BindEvents()
 	if (IObjectMessagingListenerInterface* MessagingListener = Cast<IObjectMessagingListenerInterface>(GetWorld()->GetGameInstance()))
 	{
 		TWeakObjectPtr<UBuildingManager> WeakThis = TWeakObjectPtr<UBuildingManager>(this);
-		MessagingListener->GetListener().Bind<FBuildCompleteEvent>([WeakThis](const FBuildCompleteEvent& InEv)
+		MessagingListener->GetListener().Bind<FConstructionCompleteEvent>([WeakThis](const FConstructionCompleteEvent& InEv)
 		{
-			if (WeakThis.IsValid() && InEv.BuildingFoundation.IsValidFoundation())
+			if (WeakThis.IsValid() && InEv.SourceBuildEvent.BuildingFoundation.IsValidFoundation())
 			{
-				WeakThis->OnBuildingComplete(InEv);
+				WeakThis->OnBuildingComplete(InEv.SourceBuildEvent);
 			}
 		});
 	}
