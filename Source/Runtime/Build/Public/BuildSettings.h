@@ -20,4 +20,8 @@ public:
 	/** What channel to we check for when seeing if a point is occluded? */
 	UPROPERTY(config, EditDefaultsOnly, Category = "Point Validation")
 	TEnumAsByte<ECollisionChannel> PlacementOverlapChannel;
+
+	/** ConstructionSite BP Class */
+	UPROPERTY(config, EditDefaultsOnly, Category = "Construction")
+	FSoftClassPath ConstructionSiteClass;
 };

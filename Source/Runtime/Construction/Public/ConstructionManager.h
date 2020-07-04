@@ -10,6 +10,7 @@
 
 #include "ConstructionManager.generated.h"
 
+class UBuildSettings;
 struct FUpdateConstructionRequest;
 
 UCLASS(MinimalAPI)
@@ -27,7 +28,10 @@ public:
 private:
 
 	void BindEvents();
+	void LoadAssets();
 	void OnBuildComplete(const FBuildCompleteEvent& InEv);
+
+	void CreateRequest(const FBuildCompleteEvent& InBuildCompleteEvent, UConstructionData& InLoadedData);
 
 	void UpdateRequest(const FUpdateConstructionRequest& InUpdate);
 
@@ -35,11 +39,18 @@ private:
 	void UpdateRequests(const float InAmount);
 #endif //!UE_BUILD_SHIPPING
 
+	void GenerateLinearRequest(FBuildCompleteEvent& InEv, const FFoundationPoint& InSourcePoint) const;
+
 	UPROPERTY()
 	UWorld* World;
 
 	UPROPERTY()
-	TArray<FConstructionRequest> Requests;
+	const UBuildSettings* BuildSettings;
+
+	TArray<TSharedPtr<FConstructionRequest>> Requests;
 
 	TUniquePtr<FAsyncLoader> AsyncLoader;
+
+	UPROPERTY()
+	TSubclassOf<AConstructionSite> ConstructionSiteClass;
 };

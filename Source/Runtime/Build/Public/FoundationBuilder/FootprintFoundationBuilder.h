@@ -95,10 +95,13 @@ public:
 
 	void RotateBuild() override
 	{
-		FootprintProxy->AddWorldRotation(FQuat(FootprintFoundationBuilderPrivate::RotationRate));
-		CurrentRotation += FootprintFoundationBuilderPrivate::RotationRate;
+		if (FootprintProxy != nullptr)
+		{
+			FootprintProxy->AddWorldRotation(FQuat(FootprintFoundationBuilderPrivate::RotationRate));
+			CurrentRotation += FootprintFoundationBuilderPrivate::RotationRate;
 
-		GenerateNewPoints();
+			GenerateNewPoints();
+		}
 	}
 
 private:

@@ -6,6 +6,11 @@
 
 #include "ConstructionRequest.generated.h"
 
+class AConstructionSite;
+
+DECLARE_MULTICAST_DELEGATE(FOnRequestCompleted);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRequestAdvanced, const float);
+
 USTRUCT()
 struct FConstructionRequest
 {
@@ -29,9 +34,19 @@ public:
 		, TargetProgress(0.f)
 	{
 		CurrentState = static_cast<EConstructionState>(0);
+		LoadedConstructionData->GetTimeForState(CurrentState);
 	};
 
-	void operator+=(const float InAmount);;
+	~FConstructionRequest()
+	{
+		if (OnRequestCompleted.IsBound())
+		{
+			OnRequestCompleted.Broadcast();
+		}
+	}
+
+	void Advance(const float InAmount);
+	void Complete();
 
 	UPROPERTY()
 	FBuildCompleteEvent Source;
@@ -39,9 +54,15 @@ public:
 	UPROPERTY()
 	const UConstructionData* LoadedConstructionData;
 
+	UPROPERTY()
+	AConstructionSite* SpawnedConstructionSite;
+
 	FGuid ID;
 
 	float Progress;
 	float TargetProgress;
 	EConstructionState CurrentState;
+
+	FOnRequestCompleted OnRequestCompleted;
+	FOnRequestAdvanced OnRequestAdvanced;
 };

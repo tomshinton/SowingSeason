@@ -6,7 +6,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(ConstructionRequestLog, Log, Log)
 
-void FConstructionRequest::operator+=(const float InAmount)
+void FConstructionRequest::Advance(const float InAmount)
 {
 	if (CurrentState != EConstructionState::Finished)
 	{
@@ -26,5 +26,12 @@ void FConstructionRequest::operator+=(const float InAmount)
 				TargetProgress = LoadedConstructionData->GetTimeForState(CurrentState);
 			}
 		}
+
+		OnRequestAdvanced.Broadcast(FMath::Clamp(Progress / TargetProgress, 0.f, 1.f));
 	}
+}
+
+void FConstructionRequest::Complete()
+{
+	OnRequestCompleted.Broadcast();
 }

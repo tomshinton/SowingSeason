@@ -4,7 +4,6 @@
 #include "Runtime/Build/Public/Events/BuildEvents.h"
 
 #include <Runtime/Buildings/Public/Building.h>
-#include <Runtime/Buildings/Public/LinkableBuilding.h>
 
 #include <ObjectMessaging/Public/Listener/ObjectMessagingListenerInterface.h>
 
@@ -41,38 +40,22 @@ void UBuildingManager::BindEvents()
 
 void UBuildingManager::OnBuildingComplete(const FBuildCompleteEvent& InEv)
 {
-	switch (InEv.BuildingData->BuildMode)
+	if (ABuilding* SpawnedBuilding = TrySpawnBuilding(InEv))
 	{
-	case EBuildMode::Single:
-		TrySpawnSingleBuilding(InEv);
-		break;
-	case EBuildMode::Grid:
-		break;
-	case EBuildMode::Linear:
-		TrySpawnLinearBuildings(InEv);
-		break;
+
 	}
 }
 
-void UBuildingManager::TrySpawnSingleBuilding(const FBuildCompleteEvent& InEv)
+ABuilding* UBuildingManager::TrySpawnBuilding(const FBuildCompleteEvent& InEv)
 {
 	if (ABuilding* SpawnedBuilding = World->SpawnActor<ABuilding>(InEv.BuildingData->BuildingClass.ResolveClass(), InEv.BuildingFoundation.Transform()))
 	{
 #if WITH_EDITOR
 		SpawnedBuilding->SetFolderPath(BuildingManagerPrivate::BuildingFolderPath);
 #endif //WITH_EDITOR
-	}
-}
 
-void UBuildingManager::TrySpawnLinearBuildings(const FBuildCompleteEvent& InEv)
-{
-	for (const FFoundationPoint& Point : InEv.BuildingFoundation.Points)
-	{
-		if (ALinkableBuilding* SpawnedBuilding = World->SpawnActor<ALinkableBuilding>(InEv.BuildingData->BuildingClass.ResolveClass(), FTransform(FRotator::ZeroRotator, Point.Location, FVector(1.f))))
-		{
-#if WITH_EDITOR
-			SpawnedBuilding->SetFolderPath(BuildingManagerPrivate::BuildingFolderPath);
-#endif //WITH_EDITOR
-		}
+		return SpawnedBuilding;
 	}
+
+	return nullptr;
 }

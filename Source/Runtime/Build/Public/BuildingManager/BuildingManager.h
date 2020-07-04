@@ -8,6 +8,7 @@
 struct FConstructionCompleteEvent;
 struct FBuildCompleteEvent;
 
+class ABuilding;
 class FFoundation;
 class UBuildingData;
 
@@ -26,8 +27,7 @@ private:
 
 	void OnBuildingComplete(const FBuildCompleteEvent& InEv);
 
-	void TrySpawnSingleBuilding(const FBuildCompleteEvent& InEv);
-	void TrySpawnLinearBuildings(const FBuildCompleteEvent& InEv);
+	ABuilding* TrySpawnBuilding(const FBuildCompleteEvent& InEv);
 
 	UPROPERTY()
 	UWorld* World;
