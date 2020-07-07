@@ -11,7 +11,8 @@ public class Buildings : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] 
         {
             "Engine",
-            "CoreUObject"
+            "CoreUObject",
+			"Selection"
         });
 		
 		PublicIncludePaths.AddRange(new string[] {"Runtime/Buildings/Public"});

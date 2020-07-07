@@ -57,6 +57,11 @@
 			"AdditionalDependencies": [
 				"Engine"
 			]
+		},
+		{
+			"Name": "Selection",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }

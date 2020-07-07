@@ -25,3 +25,18 @@ const UPrimitiveComponent& ABuilding::GetFootprintReference() const
 	return *BuildingMesh;
 }
 
+void ABuilding::OnSelected()
+{
+
+}
+
+void ABuilding::OnUnselected()
+{
+
+}
+
+FString ABuilding::GetDebugName() const
+{
+	return GetName();
+}
+

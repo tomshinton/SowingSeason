@@ -7,6 +7,8 @@
 
 #include "SowingSeasonPlayerController.generated.h"
 
+class USelectionComponent;
+
 UCLASS(MinimalAPI)
 class  ASowingSeasonPlayerController : public APlayerController
 {
@@ -16,6 +18,13 @@ public:
 
 	ASowingSeasonPlayerController(const FObjectInitializer& ObjectInitializer);
 
+protected:
+
+	UPROPERTY(VisibleAnywhere)
+	USelectionComponent* SelectionComponent;
+
 private:
+
 	void BeginPlay() override;
 };
+

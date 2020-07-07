@@ -23,6 +23,7 @@ public class SowingSeason : ModuleRules
 			"Movement",
 			"Level",
 			"ObjectMessaging",
+			"Selection",
 			"WorldGrid",
 			"UI"
 		});

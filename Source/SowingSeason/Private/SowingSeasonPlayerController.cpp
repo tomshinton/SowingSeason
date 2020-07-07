@@ -2,12 +2,20 @@
 
 #include "SowingSeason/Public/SowingSeasonPlayerController.h"
 
+#include <Runtime/Selection/Public/SelectionComponent.h>
+
 #if !UE_BUILD_SHIPPING
 #include "SowingSeason/Cheats/SowingSeasonCheatManager.h"
 #endif //!UE_BUILD_SHIPPING
 
+namespace SowingSeasonPlayerControllerPrivate
+{
+	const FName SelectionComponentName = TEXT("SelectionComponent");
+}
+
 ASowingSeasonPlayerController::ASowingSeasonPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+	, SelectionComponent(ObjectInitializer.CreateDefaultSubobject<USelectionComponent>(this, SowingSeasonPlayerControllerPrivate::SelectionComponentName))
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;

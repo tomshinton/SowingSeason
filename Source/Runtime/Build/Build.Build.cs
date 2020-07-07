@@ -14,6 +14,7 @@ public class Build : ModuleRules
             "Engine",
             "CoreUObject",
 			"ObjectMessaging",
+			"Selection",
 			"WorldGrid",
         });
 		
