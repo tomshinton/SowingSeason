@@ -26,4 +26,16 @@ public:
 	/** Update all current construction projects by the given value */
 	UFUNCTION(Exec, Category = "Construction")
 	void ProgressAllConstructionRequests(const float InAmount);
+
+	/** Enable construction projects to proceed on their own*/
+	UFUNCTION(Exec, Category = "Construction")
+	void EnableDebugConstruction();
+
+	/** Disable construction projects to proceeding on their own*/
+	UFUNCTION(Exec, Category = "Construction")
+	void DisableDebugConstruction();
+
+private:
+
+	FTimerHandle DebugConstructionHandle;
 };
