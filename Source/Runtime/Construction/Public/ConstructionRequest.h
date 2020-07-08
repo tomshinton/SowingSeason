@@ -9,7 +9,7 @@
 class AConstructionSite;
 
 DECLARE_MULTICAST_DELEGATE(FOnRequestCompleted);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnRequestAdvanced, const float);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRequestAdvanced, const float /*New normalised construction amount*/, const EConstructionState /*CurrentState*/);
 
 USTRUCT()
 struct FConstructionRequest
@@ -34,7 +34,7 @@ public:
 		, TargetProgress(0.f)
 	{
 		CurrentState = static_cast<EConstructionState>(0);
-		LoadedConstructionData->GetTimeForState(CurrentState);
+		TargetProgress = LoadedConstructionData->GetTimeForState(CurrentState);
 	};
 
 	~FConstructionRequest()

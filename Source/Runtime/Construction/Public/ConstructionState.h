@@ -2,7 +2,7 @@
 
 #include "ConstructionState.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class EConstructionState : uint8 
 {
 	Framing, //Construction of timber frames/scaffolding

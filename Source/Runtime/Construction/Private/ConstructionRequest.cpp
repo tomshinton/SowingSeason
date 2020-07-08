@@ -27,7 +27,7 @@ void FConstructionRequest::Advance(const float InAmount)
 			}
 		}
 
-		OnRequestAdvanced.Broadcast(FMath::Clamp(Progress / TargetProgress, 0.f, 1.f));
+		OnRequestAdvanced.Broadcast(FMath::Clamp(Progress / TargetProgress, 0.f, 1.f), CurrentState);
 	}
 }
 

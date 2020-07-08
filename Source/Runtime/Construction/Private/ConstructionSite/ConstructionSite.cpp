@@ -42,6 +42,14 @@ void AConstructionSite::SetConstructionRequest(TSharedPtr<FConstructionRequest> 
 		}
 	});
 
+	SourceRequest->OnRequestAdvanced.AddLambda([WeakThis](const float InNewAmount, const EConstructionState InNewState)
+	{
+		if (WeakThis.IsValid())
+		{
+			WeakThis->OnAdvanced(InNewAmount, InNewState);
+		}
+	});
+
 	InitialiseDecals();
 }
 
@@ -49,6 +57,11 @@ void AConstructionSite::OnComplete()
 {
 	//Replace this with something nice at a later date
 	Destroy();
+}
+
+void AConstructionSite::OnAdvanced_Implementation(const float InNewAmount, const EConstructionState InNewState)
+{
+	//Base functionality, extended by blueprint
 }
 
 void AConstructionSite::InitialiseDecals()

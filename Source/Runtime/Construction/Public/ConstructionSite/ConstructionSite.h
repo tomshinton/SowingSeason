@@ -36,9 +36,16 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FSoftObjectPath DecalMaterialClass;
 
+protected:
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnAdvanced(const float InNewAmount, const EConstructionState InNewState);
+
 private:
 
 	void OnComplete();
+	
+
 	void InitialiseDecals();
 
 	TSharedPtr<FConstructionRequest> SourceRequest;
