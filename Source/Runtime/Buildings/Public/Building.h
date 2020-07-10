@@ -29,6 +29,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BuildingMesh;
 
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> SelectionBoxClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI, meta = (MakeEditWidget = true))
+	FVector SelectionBoxLocation;
+
 	//IFootprintProviderInterface
 	const UPrimitiveComponent& GetFootprintReference() const override;
 	//~IFootprintProviderInterface
@@ -36,6 +42,8 @@ public:
 	//ISelectionInterface
 	virtual void OnSelected() override;
 	virtual void OnUnselected() override;
+	virtual TSubclassOf<UUserWidget> GetSelectionBoxClass() const override;
+	virtual FVector GetSelectionBoxLocation() const override;
 
 #if !UE_BUILD_SHIPPING
 	virtual FString GetDebugName() const override;

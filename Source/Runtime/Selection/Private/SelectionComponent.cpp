@@ -108,6 +108,11 @@ void USelectionComponent::TrySelect()
 			Deselect();
 			CurrentSelectionInterface = CurrentHoverInterface;
 			CurrentSelectionInterface->OnSelected();
+
+			if (OnSelect.IsBound())
+			{
+				OnSelect.Broadcast(CurrentSelectionInterface);
+			}
 		}
 		else
 		{
@@ -122,5 +127,10 @@ void USelectionComponent::Deselect()
 	{
 		CurrentSelectionInterface->OnUnselected();
 		CurrentSelectionInterface = TWeakInterfacePtr<ISelectionInterface>();
+
+		if (OnDeselect.IsBound())
+		{
+			OnDeselect.Broadcast();
+		}
 	}	
 }

@@ -4,10 +4,14 @@
 
 #include <Runtime/CoreUObject/Public/UObject/WeakInterfacePtr.h>
 
+#include "Runtime/Selection/Public/SelectionInterface.h"
+
 #include "SelectionComponent.generated.h"
 
 class APlayerController;
-class ISelectionInterface;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSelect, const TWeakInterfacePtr<ISelectionInterface>& /*New interface*/);
+DECLARE_MULTICAST_DELEGATE(FOnDeselect);
 
 UCLASS(MinimalAPI)
 class USelectionComponent : public UActorComponent
@@ -20,6 +24,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TEnumAsByte<ECollisionChannel> SelectionChannel;
+
+	FOnSelect& GetOnSelectDelegate() { return OnSelect; }
+	FOnDeselect& GetOnDeselectDelegate() { return OnDeselect; }
 
 private:
 
@@ -41,6 +48,9 @@ private:
 
 	FTraceHandle TraceHandle;
 	FTraceDelegate TraceDelegate;
+
+	FOnSelect OnSelect;
+	FOnDeselect OnDeselect;
 
 	TWeakInterfacePtr<ISelectionInterface> CurrentHoverInterface;
 	TWeakInterfacePtr<ISelectionInterface> CurrentSelectionInterface;

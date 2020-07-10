@@ -12,7 +12,8 @@ public class Buildings : ModuleRules
         {
             "Engine",
             "CoreUObject",
-			"Selection"
+			"Selection",
+			"UMG"
         });
 		
 		PublicIncludePaths.AddRange(new string[] {"Runtime/Buildings/Public"});

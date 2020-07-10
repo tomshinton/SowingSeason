@@ -11,7 +11,8 @@ public class UI : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] 
         {
             "Engine",
-            "CoreUObject"
+            "CoreUObject", 
+			"Selection"
         });
 		
 		PublicIncludePaths.AddRange(new string[] {"Runtime/UI/Public"});
