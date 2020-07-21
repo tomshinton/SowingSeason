@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = UI, meta = (MakeEditWidget = true))
 	FVector SelectionBoxLocation;
 
+	UPROPERTY(EditDefaultsOnly)
+	FText BuildingName;
+
 	//IFootprintProviderInterface
 	const UPrimitiveComponent& GetFootprintReference() const override;
 	//~IFootprintProviderInterface
@@ -44,9 +47,7 @@ public:
 	virtual void OnUnselected() override;
 	virtual TSubclassOf<UUserWidget> GetSelectionBoxClass() const override;
 	virtual FVector GetSelectionBoxLocation() const override;
-
-#if !UE_BUILD_SHIPPING
-	virtual FString GetDebugName() const override;
-#endif //!UE_BUILD_SHIPPING
+	virtual AActor& GetActor() override;
+	virtual FText GetSelectionName() const override;
 	//~ISelectionInterface
 };

@@ -8,6 +8,7 @@
 #include "UI_SelectionBox.generated.h"
 
 class UCanvasPanel;
+class UTextBlock;
 class APlayerController;
 
 UCLASS(abstract, Blueprintable, hidedropdown)
@@ -25,6 +26,9 @@ protected:
 
 	void NativeConstruct() override;
 	void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* SelectionName;
 
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* SelectionBox;

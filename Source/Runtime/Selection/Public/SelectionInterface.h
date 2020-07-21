@@ -24,7 +24,7 @@ public:
 	virtual TSubclassOf<UUserWidget> GetSelectionBoxClass() const = 0;
 	virtual FVector GetSelectionBoxLocation() const = 0;
 
-#if !UE_BUILD_SHIPPING
-	virtual FString GetDebugName() const = 0;
-#endif //!UE_BUILD_SHIPPING
+	virtual AActor& GetActor() = 0;
+
+	virtual FText GetSelectionName() const = 0;
 };

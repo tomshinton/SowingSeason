@@ -90,8 +90,8 @@ void USelectionComponent::OnTraceComplete(const FTraceDatum& InTraceData)
 #if !UE_BUILD_SHIPPING
 	if (CVarDrawDebugSelectionReadout.GetValueOnAnyThread())
 	{
-		const FString CurrentHoverName = CurrentHoverInterface.IsValid() ? CurrentHoverInterface->GetDebugName() : TEXT("Nothing");
-		const FString CurrentSelectionName = CurrentSelectionInterface.IsValid() ? CurrentSelectionInterface->GetDebugName() : TEXT("Nothing");
+		const FString CurrentHoverName = CurrentHoverInterface.IsValid() ? CurrentHoverInterface->GetSelectionName().ToString() : TEXT("Nothing");
+		const FString CurrentSelectionName = CurrentSelectionInterface.IsValid() ? CurrentSelectionInterface->GetSelectionName().ToString() : TEXT("Nothing");
 		
 		GEngine->AddOnScreenDebugMessage(1, SelectionComponentPrivate::UpdateRate + SMALL_NUMBER, FColor::White, FString::Printf(TEXT("Currently Hovering: %s"), *CurrentHoverName));
 		GEngine->AddOnScreenDebugMessage(2, SelectionComponentPrivate::UpdateRate + SMALL_NUMBER, FColor::White, FString::Printf(TEXT("Currently Selecting: %s"), *CurrentSelectionName));

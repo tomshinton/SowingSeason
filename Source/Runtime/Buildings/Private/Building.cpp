@@ -37,14 +37,19 @@ void ABuilding::OnUnselected()
 
 }
 
-FString ABuilding::GetDebugName() const
+FText ABuilding::GetSelectionName() const
 {
-	return GetName();
+	return BuildingName;
 }
 
 FVector ABuilding::GetSelectionBoxLocation() const
 {
 	return GetActorLocation() + SelectionBoxLocation;
+}
+
+AActor& ABuilding::GetActor()
+{
+	return *this;
 }
 
 TSubclassOf<UUserWidget> ABuilding::GetSelectionBoxClass() const

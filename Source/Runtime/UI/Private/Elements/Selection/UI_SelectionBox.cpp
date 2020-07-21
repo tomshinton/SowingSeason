@@ -3,6 +3,7 @@
 #include <Runtime/UMG/Public/Blueprint/WidgetLayoutLibrary.h>
 #include <Runtime/UMG/Public/Components/CanvasPanel.h>
 #include <Runtime/UMG/Public/Components/CanvasPanelSlot.h>
+#include <Runtime/UMG/Public/Components/TextBlock.h>
 
 UUI_SelectionBox::UUI_SelectionBox(const FObjectInitializer& ObjectInitialiser)
 	: Super(ObjectInitialiser)
@@ -15,6 +16,14 @@ void UUI_SelectionBox::NativeConstruct()
 	Super::NativeConstruct();
 
 	SetAlignmentInViewport(FVector2D(0.5f, 0.5f));
+
+	if (Selection.IsValid())
+	{
+		if (SelectionName != nullptr)
+		{
+			SelectionName->SetText(Selection->GetSelectionName());
+		}
+	}
 }
 
 void UUI_SelectionBox::Initialise(const TWeakInterfacePtr<ISelectionInterface>& InSelection)

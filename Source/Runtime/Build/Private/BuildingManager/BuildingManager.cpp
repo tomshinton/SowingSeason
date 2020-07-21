@@ -50,7 +50,7 @@ ABuilding* UBuildingManager::TrySpawnBuilding(const FBuildCompleteEvent& InEv)
 {
 	if (ABuilding* SpawnedBuilding = World->SpawnActor<ABuilding>(InEv.BuildingData->BuildingClass.ResolveClass(), InEv.BuildingFoundation.Transform()))
 	{
-#if WITH_EDITOR
+	#if WITH_EDITOR
 		SpawnedBuilding->SetFolderPath(BuildingManagerPrivate::BuildingFolderPath);
 #endif //WITH_EDITOR
 
