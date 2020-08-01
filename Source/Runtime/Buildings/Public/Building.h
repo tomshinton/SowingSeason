@@ -10,6 +10,7 @@
 #include "Building.generated.h"
 
 class USceneComponent;
+class UInventoryComponent;
 
 UCLASS(MinimalAPI)
 class ABuilding : public AActor
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BuildingMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = Inventory)
+	UInventoryComponent* InventoryComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> SelectionBoxClass;

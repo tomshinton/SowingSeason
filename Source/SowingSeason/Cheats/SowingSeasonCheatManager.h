@@ -35,6 +35,14 @@ public:
 	UFUNCTION(Exec, Category = "Construction")
 	void DisableDebugConstruction();
 
+	/** Add a selected item to the selected actor's inventory, if they have one */
+	UFUNCTION(Exec, Category = "Inventory")
+	void AddItemToSelection(const uint8 InAmount, const FName& InName);
+
+	/** Remove a selected item to the selected actor's inventory, if they have one */
+	UFUNCTION(Exec, Category = "Inventory")
+	void RemoveItemToSelection(const uint8 InAmount, const FName& InName);
+
 private:
 
 	FTimerHandle DebugConstructionHandle;

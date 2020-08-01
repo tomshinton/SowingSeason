@@ -1,9 +1,12 @@
 #include "Runtime/Buildings/Public/Building.h"
 
+#include <Runtime/Inventory/Public/InventoryComponent.h>
+
 namespace BuildingPrivate
 {
 	const FName BuildingRootName = TEXT("BuildingRoot");
 	const FName BuildingMeshName = TEXT("BuildingMesh");
+	const FName InventoryComponentName = TEXT("InventoryComponent");
 
 	const FName BuildingCollisionProfileName = TEXT("Building");
 }
@@ -12,6 +15,7 @@ ABuilding::ABuilding(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 	, BuildingRoot(ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, BuildingPrivate::BuildingRootName))
 	, BuildingMesh(ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, BuildingPrivate::BuildingMeshName))
+	, InventoryComponent(ObjectInitializer.CreateDefaultSubobject<UInventoryComponent>(this, BuildingPrivate::InventoryComponentName))
 	, SelectionBoxClass(nullptr)
 	, SelectionBoxLocation(FVector::ZeroVector)
 {

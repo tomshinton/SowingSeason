@@ -28,6 +28,8 @@ public:
 	FOnSelect& GetOnSelectDelegate() { return OnSelect; }
 	FOnDeselect& GetOnDeselectDelegate() { return OnDeselect; }
 
+	TWeakInterfacePtr<ISelectionInterface> GetCurrentSelection() const { return CurrentSelectionInterface; }
+
 private:
 
 	void BeginPlay() override;

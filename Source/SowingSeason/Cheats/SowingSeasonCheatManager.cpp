@@ -5,6 +5,9 @@
 #include <ObjectMessaging/Public/Sender/ObjectMessagingFunctions.h>
 #include <Runtime/Build/Public/BuildInterface.h>
 #include <Runtime/Construction/Public/Events/ConstructionEvents.h>
+#include <Runtime/Inventory/Public/InventoryInterface.h>
+#include <Runtime/Selection/Public/SelectionComponent.h>
+#include <Runtime/Selection/Public/SelectionInterface.h>
 
 namespace ConstructionCheatsPrivate
 {
@@ -50,4 +53,34 @@ void USowingSeasonCheatManager::EnableDebugConstruction()
 void USowingSeasonCheatManager::DisableDebugConstruction()
 {
 	GetWorld()->GetTimerManager().ClearTimer(DebugConstructionHandle);
+}
+
+void USowingSeasonCheatManager::AddItemToSelection(const uint8 InAmount, const FName& InName)
+{
+	if (USelectionComponent* Component = GetOwningController()->FindComponentByClass<USelectionComponent>())
+	{
+		TWeakInterfacePtr<ISelectionInterface> CurrentSelection = Component->GetCurrentSelection();
+		if (CurrentSelection.IsValid())
+		{
+			if (IInventoryInterface* InventoryInterface = CurrentSelection->GetActor().GetInterface<IInventoryInterface>())
+			{
+				InventoryInterface->AddItem(InAmount, InName);
+			}
+		}
+	}
+}
+
+void USowingSeasonCheatManager::RemoveItemToSelection(const uint8 InAmount, const FName& InName)
+{
+	if (USelectionComponent* Component = GetOwningController()->FindComponentByClass<USelectionComponent>())
+	{
+		TWeakInterfacePtr<ISelectionInterface> CurrentSelection = Component->GetCurrentSelection();
+		if (CurrentSelection.IsValid())
+		{
+			if (IInventoryInterface* InventoryInterface = CurrentSelection->GetActor().GetInterface<IInventoryInterface>())
+			{
+				InventoryInterface->RemoveItem(InAmount, InName);
+			}
+		}
+	}
 }

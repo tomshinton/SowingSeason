@@ -12,6 +12,7 @@ public class Buildings : ModuleRules
         {
             "Engine",
             "CoreUObject",
+			"Inventory",
 			"Selection",
 			"UMG"
         });
