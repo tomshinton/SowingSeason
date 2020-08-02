@@ -12,7 +12,8 @@ public class UI : ModuleRules
         {
             "Engine",
             "CoreUObject", 
-			"Selection"
+			"Selection",
+			"Inventory"
         });
 		
 		PublicIncludePaths.AddRange(new string[] {"Runtime/UI/Public"});

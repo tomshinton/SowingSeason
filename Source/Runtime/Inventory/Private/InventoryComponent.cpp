@@ -35,6 +35,11 @@ void UInventoryComponent::AddItem(const uint8 InNumToAdd, const FName& InItem)
 			}
 		}
 	}
+
+	if (NumLeft != InNumToAdd)
+	{
+		OnInventoryChanged.Broadcast();
+	}
 }
 
 void UInventoryComponent::RemoveItem(const uint8 InNumToRemove, const FName& InItem)
@@ -54,4 +59,14 @@ void UInventoryComponent::RemoveItem(const uint8 InNumToRemove, const FName& InI
 			}
 		}
 	}
+
+	if (NumLeft != InNumToRemove)
+	{
+		OnInventoryChanged.Broadcast();
+	}
+}
+
+TArray<FInventoryItem> UInventoryComponent::GetItems() const
+{
+	return Inventory.Items;
 }

@@ -26,7 +26,7 @@ void FInventoryItem::TryAdd(uint8& OutNum, const FName& InName, const FItemDataR
 void FInventoryItem::TryRemove(uint8& OutNum)
 {
 	//As we're using an overflow method on an unsigned type, temporarily use a signed type and reassign
-	const int8 NewAmount = Amount - OutNum;
+	const int32 NewAmount = Amount - OutNum;
 
 	if (NewAmount <= 0)
 	{
@@ -40,9 +40,9 @@ void FInventoryItem::TryRemove(uint8& OutNum)
 	}
 }
 
-void FInventoryItem::GetData()
+TOptional<FItemDataRow> FInventoryItem::GetData() const
 {
-	Data = UInventorySettings::GetItemInfo(Name);
+	return Data;
 }
 
 void FInventoryItem::Clear()

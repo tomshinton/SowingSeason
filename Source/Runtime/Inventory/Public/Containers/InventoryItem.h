@@ -5,7 +5,7 @@
 #include "InventoryItem.generated.h"
 
 USTRUCT()
-struct FInventoryItem
+struct INVENTORY_API FInventoryItem
 {
 	GENERATED_BODY()
 
@@ -34,7 +34,7 @@ public:
 	void TryAdd(uint8& OutNum, const FName& InName, const FItemDataRow& InData);
 	void TryRemove(uint8& OutNum);
 
-	void GetData();
+	TOptional<FItemDataRow> GetData() const;
 	void Clear();
 
 	bool CanAcceptItem(const FName& InItem) const;

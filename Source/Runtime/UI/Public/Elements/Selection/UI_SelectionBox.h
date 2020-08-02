@@ -9,6 +9,7 @@
 
 class UCanvasPanel;
 class UTextBlock;
+class UUI_InventoryView;
 class APlayerController;
 
 UCLASS(abstract, Blueprintable, hidedropdown)
@@ -33,11 +34,16 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* SelectionBox;
 
+	UPROPERTY(meta = (BindWidget))
+	UUI_InventoryView* InventoryView;
+
 	TWeakInterfacePtr<ISelectionInterface> Selection;
 
 private:
 
 	void AlignInViewport();
+	
+	void AddInventoryView();
 
 	UPROPERTY()
 	APlayerController* LocalController;

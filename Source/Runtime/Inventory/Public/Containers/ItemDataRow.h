@@ -5,7 +5,7 @@
 #include "ItemDataRow.generated.h"
 
 USTRUCT()
-struct FItemDataRow : public FTableRowBase
+struct INVENTORY_API FItemDataRow : public FTableRowBase
 {
 
 	GENERATED_BODY()

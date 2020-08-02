@@ -26,8 +26,10 @@ private:
 	void BeginPlay() override;
 
 	//IInventoryInterface
+	FOnInventoryChanged& GetOnInventoryChanged() override { return OnInventoryChanged; };
 	void AddItem(const uint8 NumToAdd, const FName& InItem) override;
 	void RemoveItem(const uint8 InNumToRemove, const FName& InItem) override;
+	TArray<FInventoryItem> GetItems() const override;
 	//~IInventoryInterface
 
 	UPROPERTY()
@@ -35,4 +37,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	FInventory Inventory;
+
+private:
+
+	FOnInventoryChanged OnInventoryChanged;
 };
