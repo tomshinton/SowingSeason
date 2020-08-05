@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <Runtime/CoreUObject/Public/UObject/Interface.h>
 
 #include "InventoryInterface.generated.h"
