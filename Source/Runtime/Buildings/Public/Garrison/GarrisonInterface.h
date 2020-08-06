@@ -4,6 +4,8 @@
 
 #include "GarrisonInterface.generated.h"
 
+class USceneComponent;
+
 UINTERFACE(MinimalAPI)
 class UGarrisonInterface : public UInterface
 {
@@ -16,5 +18,9 @@ class IGarrisonInterface
 
 public:
 
+	virtual bool RequestGarrison(AActor& InRequestingActor) = 0;
+	virtual bool RequestUngarrison(AActor& InRequestingActor) = 0;
 
+	virtual bool HasDoors() const = 0;
+	virtual USceneComponent& GetRandomDoor() const = 0;
 };

@@ -1,13 +1,14 @@
 #include "Runtime/Buildings/Public/Garrison/GarrisonComponent.h"
 #include "Runtime/Buildings/Public/Architecture/DoorComponent.h"
 
-#include <Runtime/Engine/Classes/GameFramework/Character.h>
+#include <Runtime/Engine/Classes/GameFramework/Controller.h>
 
 DEFINE_LOG_CATEGORY_STATIC(GarrisonComponentLog, Log, All)
 
 UGarrisonComponent::UGarrisonComponent(const FObjectInitializer& ObjectInitialiser)
 	: Super(ObjectInitialiser)
 	, Doors()
+	, GarrisonedControllers()
 {
 
 }
@@ -28,6 +29,54 @@ void UGarrisonComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Door->GetOnGarrisonRequested().RemoveAll(this);
 		Door->GetOnGarrisonUnrequested().RemoveAll(this);
 	}
+}
+
+bool UGarrisonComponent::RequestGarrison(AActor& InRequestingActor)
+{
+	if (AController* RequestAsController = Cast<AController>(&InRequestingActor))
+	{
+		if (APawn* ControlledPawn = RequestAsController->GetPawn())
+		{
+			ControlledPawn->SetActorHiddenInGame(true);
+			ControlledPawn->SetActorLocation(GetOwner()->GetActorLocation());
+		}
+
+		GarrisonedControllers.AddUnique(RequestAsController);
+		return true;
+	}
+
+	return false;
+}
+
+bool UGarrisonComponent::RequestUngarrison(AActor& InRequestingActor)
+{
+	if (AController* RequestAsController = Cast<AController>(&InRequestingActor))
+	{
+		if (APawn* ControlledPawn = RequestAsController->GetPawn())
+		{
+			InRequestingActor.SetActorHiddenInGame(false);
+			InRequestingActor.SetActorLocation(GetRandomDoor().GetComponentLocation());
+		}
+
+		GarrisonedControllers.RemoveSwap(RequestAsController);
+		return true;
+	}
+
+	return false;
+}
+
+bool UGarrisonComponent::HasDoors() const
+{
+	return Doors.Num() > 0;
+}
+
+USceneComponent& UGarrisonComponent::GetRandomDoor() const
+{
+#if !UE_BUILD_SHIPPING
+	check(Doors.Num() > 0);
+#endif //!UE_BUILD_SHIPPING
+
+	return *Doors[FMath::RandRange(0, Doors.Num() - 1)];
 }
 
 void UGarrisonComponent::CacheDoorsOnOwner()

@@ -9,6 +9,7 @@
 #include "GarrisonComponent.generated.h"
 
 class UDoorComponent;
+class AController;
 
 UCLASS(meta=(BlueprintSpawnableComponent))
 class UGarrisonComponent : public UActorComponent
@@ -25,6 +26,13 @@ public:
 
 private:
 
+	//IGarrisonInterface
+	virtual bool RequestGarrison(AActor& InRequestingActor) override;
+	virtual bool RequestUngarrison(AActor& InRequestingActor) override;
+	virtual bool HasDoors() const override;
+	virtual USceneComponent& GetRandomDoor() const override;
+	//~IGarrisonInterface
+
 	void CacheDoorsOnOwner();
 	
 	UFUNCTION()
@@ -35,4 +43,7 @@ private:
 
 	UPROPERTY()
 	TArray<UDoorComponent*> Doors;
+
+	UPROPERTY()
+	TArray<AController*> GarrisonedControllers;
 };
