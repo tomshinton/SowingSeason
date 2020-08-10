@@ -2,13 +2,14 @@
 
 #include "SowingSeason/Public/SowingSeasonGameState.h"
 
+#include <Runtime/AICore/Public/VillagerManager.h>
 #include <Runtime/Build/Public/BuildingManager/BuildingManager.h>
 #include <Runtime/Construction/Public/ConstructionManager.h>
 #include <Runtime/WorldGrid/Public/GridProjection/GridProjectionManager.h>
 
 namespace SowingSeasonGameStatePrivate
 {
-	const uint8 ManagerCount = 3;
+	const uint8 ManagerCount = 4;
 }
 
 void ASowingSeasonGameState::BuildManagerList()
@@ -20,6 +21,7 @@ void ASowingSeasonGameState::BuildManagerList()
 	ManagerList.Emplace(UGridProjectionManager::StaticClass(), [this](UObject& InSpawnedManager) { InitialiseGridLocationManager(InSpawnedManager); });
 	ManagerList.Emplace(UBuildingManager::StaticClass(), [this](UObject& InSpawnedManager) { InitialiseBuildingManager(InSpawnedManager); });
 	ManagerList.Emplace(UConstructionManager::StaticClass(), [this](UObject& InSpawnedManager) { InitialiseConstructionManager(InSpawnedManager); });
+	ManagerList.Emplace(UVillagerManager::StaticClass(), [this](UObject& InSpawnedManager) { InitialiseVillagerManager(InSpawnedManager); });
 
 #if !UE_BUILD_SHIPPING
 	checkf(ManagerList.Num() == SowingSeasonGameStatePrivate::ManagerCount, TEXT("Manager count exceeds static manager count - make sure the correct amount are reserved prior to population"))
@@ -41,5 +43,11 @@ void ASowingSeasonGameState::InitialiseBuildingManager(UObject& InManager)
 void ASowingSeasonGameState::InitialiseConstructionManager(UObject& InManager)
 {
 	UConstructionManager* Manager = CastChecked<UConstructionManager>(&InManager);
+	Manager->Init(*GetWorld());
+}
+
+void ASowingSeasonGameState::InitialiseVillagerManager(UObject& InManager)
+{
+	UVillagerManager* Manager = CastChecked<UVillagerManager>(&InManager);
 	Manager->Init(*GetWorld());
 }

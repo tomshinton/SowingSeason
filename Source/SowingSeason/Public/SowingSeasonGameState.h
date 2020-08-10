@@ -21,4 +21,5 @@ private:
 	void InitialiseGridLocationManager(UObject& InManager);
 	void InitialiseBuildingManager(UObject& InManager);
 	void InitialiseConstructionManager(UObject& InManager);
+	void InitialiseVillagerManager(UObject& InManager);
 };

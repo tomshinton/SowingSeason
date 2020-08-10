@@ -7,6 +7,8 @@
 
 #include "VillagerPawn.generated.h"
 
+class UIdentityComponent;
+
 UCLASS(abstract, Blueprintable, MinimalAPI)
 class AVillagerPawn : public APawn
 {
@@ -15,4 +17,7 @@ class AVillagerPawn : public APawn
 public:
 
 	AVillagerPawn(const FObjectInitializer& ObjectInitialiser);
+
+	UPROPERTY(VisibleAnywhere)
+	UIdentityComponent* IdentityComponent;
 };

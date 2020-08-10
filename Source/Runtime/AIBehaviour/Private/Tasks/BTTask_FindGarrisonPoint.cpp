@@ -54,7 +54,7 @@ EBTNodeResult::Type UBTTask_FindGarrisonPoint::ExecuteTask(UBehaviorTreeComponen
 		break;
 	}
 
-	return EBTNodeResult::Failed;;
+	return EBTNodeResult::Failed;
 }
 
 EBTNodeResult::Type UBTTask_FindGarrisonPoint::GetLocationFromObject()
