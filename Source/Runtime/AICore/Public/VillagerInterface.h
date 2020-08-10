@@ -16,4 +16,5 @@ class IVillagerInterface
 
 public:
 
+	virtual void RequestVillagerSpawn() = 0;
 };

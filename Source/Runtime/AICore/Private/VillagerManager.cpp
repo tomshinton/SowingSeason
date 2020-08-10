@@ -1,5 +1,7 @@
 #include "Runtime/AICore/Public/VillagerManager.h"
 
+#include "Runtime/AICore/Public/AISettings.h"
+#include "Runtime/AICore/Public/Core/VillagerPawn.h"
 #include "Runtime/AICore/Public/Spawning/VillagerSpawnVolume.h"
 
 #include <Runtime/Engine/Classes/Components/BoxComponent.h>
@@ -16,11 +18,20 @@ DEFINE_LOG_CATEGORY_STATIC(VillagerManagerLog, Log, Log)
 namespace VillagerManagerPrivate
 {
 	const uint8 NumSpawnPointsPerVolume = 10;
+	const float VillagerSpawnRate = 0.2f;
+
+#if WITH_EDITOR
+	const FName VillagerFolderPath = TEXT("Villagers");
+#endif //WITH_EDITOR
 }
 
 UVillagerManager::UVillagerManager()
 	: World(nullptr)
 	, PotentialSpawnLocations()
+	, AISettings(GetDefault<UAISettings>())
+	, AsyncLoader(MakeUnique<FAsyncLoader>())
+	, NumVillagerRequests(0)
+	, SpawnVillagerTimerHandle()
 {
 
 }
@@ -38,6 +49,61 @@ void UVillagerManager::Init(UWorld& InWorld)
 				WeakThis->BuildSpawnLocations(*NavSys);
 			}
 		});
+	}
+
+	if (AISettings != nullptr && !AISettings->VillagerClass.IsNull())
+	{
+		AsyncLoader->RequestLoad<UClass>(AISettings->VillagerClass, [WeakThis = TWeakObjectPtr<UVillagerManager>(this)](UClass& LoadedClass)
+		{
+			if (WeakThis.IsValid())
+			{
+				if (LoadedClass.IsChildOf(AVillagerPawn::StaticClass()))
+				{
+					WeakThis->VillagerClass = &LoadedClass;
+				}
+			}
+		});
+	}
+}
+
+void UVillagerManager::RequestVillagerSpawn()
+{
+	NumVillagerRequests++;
+
+	FTimerManager& TimerManager = World->GetTimerManager();
+	if (!TimerManager.IsTimerActive(SpawnVillagerTimerHandle))
+	{
+		TimerManager.SetTimer(SpawnVillagerTimerHandle, this, &UVillagerManager::SpawnVillager, VillagerManagerPrivate::VillagerSpawnRate, true, 1.f);
+	}
+}
+
+void UVillagerManager::SpawnVillager()
+{
+	if (VillagerClass != nullptr)
+	{
+		if (AVillagerPawn* NewVillager = World->SpawnActor<AVillagerPawn>(VillagerClass, GetSpawnLocation(), FRotator::ZeroRotator))
+		{
+#if WITH_EDITOR
+			NewVillager->SetFolderPath(VillagerManagerPrivate::VillagerFolderPath);
+#endif //WITH_EDITOR
+
+			Villagers.AddUnique(NewVillager);
+			--NumVillagerRequests;
+		}
+	}
+
+	if (NumVillagerRequests <= 0)
+	{
+		FTimerDelegate SpawnShutdownDelegate;
+		SpawnShutdownDelegate.BindLambda([WeakThis = TWeakObjectPtr<UVillagerManager>(this)]()
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->World->GetTimerManager().ClearTimer(WeakThis->SpawnVillagerTimerHandle);
+			}
+		});
+
+		World->GetTimerManager().SetTimerForNextTick(SpawnShutdownDelegate);
 	}
 }
 
@@ -75,4 +141,10 @@ void UVillagerManager::BuildSpawnLocations(UNavigationSystemV1& InNavSys)
 	}
 
 	UE_LOG(VillagerManagerLog, Log, TEXT("Caching %i villager spawn points"), PotentialSpawnLocations.Num());
+}
+
+FVector UVillagerManager::GetSpawnLocation() const
+{
+	return PotentialSpawnLocations[FMath::RandRange(0, PotentialSpawnLocations.Num() - 1)];
+
 }
