@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "Runtime/Selection/Public/SelectionComponent.h"
 #include "Runtime/Selection/Public/SelectionInterface.h"
 

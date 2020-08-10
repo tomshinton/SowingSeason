@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "Runtime/Build/Public/BuildingManager/BuildingManager.h"
 
 #include "Runtime/Build/Public/BuildingData/BuildingData.h"

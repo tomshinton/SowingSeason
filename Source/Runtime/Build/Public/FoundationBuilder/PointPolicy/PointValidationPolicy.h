@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #pragma once
 
 #include "Runtime/Build/Public/FoundationBuilder/PointPolicy/PolicyFailReason.h"

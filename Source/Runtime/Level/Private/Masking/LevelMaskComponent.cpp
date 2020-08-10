@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "Runtime/Level/Public/Masking/LevelMaskComponent.h"
 
 #include <Runtime/Engine/Public/EngineUtils.h>

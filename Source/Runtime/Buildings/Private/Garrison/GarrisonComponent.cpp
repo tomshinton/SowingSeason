@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "Runtime/Buildings/Public/Garrison/GarrisonComponent.h"
 #include "Runtime/Buildings/Public/Architecture/DoorComponent.h"
 

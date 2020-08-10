@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "Runtime/Inventory/Public/Containers/InventoryItem.h"
 #include "Runtime/Inventory/Public/InventorySettings.h"
 

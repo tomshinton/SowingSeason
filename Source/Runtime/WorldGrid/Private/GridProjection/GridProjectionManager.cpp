@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #include "Runtime/WorldGrid/Public/GridProjection/GridProjectionManager.h"
 #include "Runtime/WorldGrid/Public/WorldGridSettings.h"
 

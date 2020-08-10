@@ -1,3 +1,5 @@
+// Sowing Season - Tom Shinton 2020
+
 #pragma once
 
 #include <Runtime/Engine/Classes/Kismet/BlueprintFunctionLibrary.h>
