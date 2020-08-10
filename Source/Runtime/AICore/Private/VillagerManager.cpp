@@ -22,13 +22,16 @@ namespace VillagerManagerPrivate
 	const uint8 NumSpawnPointsPerVolume = 10;
 	const float VillagerSpawnRate = 0.2f;
 
+	const FName FamilyGeneratorName = TEXT("FamilyGenerator");
+
 #if WITH_EDITOR
 	const FName VillagerFolderPath = TEXT("Villagers");
 #endif //WITH_EDITOR
 }
 
 UVillagerManager::UVillagerManager()
-	: World(nullptr)
+	: FamilyGenerator(CreateDefaultSubobject<UFamilyGeneratorComponent>(VillagerManagerPrivate::FamilyGeneratorName))
+	, World(nullptr)
 	, PotentialSpawnLocations()
 	, AISettings(GetDefault<UAISettings>())
 	, AsyncLoader(MakeUnique<FAsyncLoader>())
@@ -91,6 +94,8 @@ void UVillagerManager::SpawnVillager()
 
 			Villagers.AddUnique(NewVillager);
 			--NumVillagerRequests;
+
+
 		}
 	}
 
@@ -148,5 +153,4 @@ void UVillagerManager::BuildSpawnLocations(UNavigationSystemV1& InNavSys)
 FVector UVillagerManager::GetSpawnLocation() const
 {
 	return PotentialSpawnLocations[FMath::RandRange(0, PotentialSpawnLocations.Num() - 1)];
-
 }

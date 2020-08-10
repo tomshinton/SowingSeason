@@ -13,6 +13,7 @@ public class AICore : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] 
         {
 			"AIModule",
+			"Family",
 			"NavigationSystem",
             "Engine",
             "CoreUObject"

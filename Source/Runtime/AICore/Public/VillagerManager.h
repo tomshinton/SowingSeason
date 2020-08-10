@@ -7,6 +7,8 @@
 #include "Runtime/AICore/Public/VillagerInterface.h"
 #include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
 
+#include <Runtime/Family/Public/FamilyGeneratorComponent.h>
+
 #include "VillagerManager.generated.h"
 
 class AVillagerPawn;
@@ -26,6 +28,19 @@ public:
 
 private:
 
+	//IVillagerInterface
+	void RequestVillagerSpawn() override;
+	FGuid RequestFamily(const FGuid& InRequestingVillager) override { return FamilyGenerator->GetFamilyForVillager(InRequestingVillager); };
+	//~IVillagerInterface
+
+	void SpawnVillager();
+
+	void BuildSpawnLocations(UNavigationSystemV1& InNavSys);
+	FVector GetSpawnLocation() const;
+
+	UPROPERTY()
+	UFamilyGeneratorComponent* FamilyGenerator;
+
 	UPROPERTY()
 	UWorld* World;
 
@@ -44,14 +59,5 @@ private:
 
 	int32 NumVillagerRequests;
 
-	//IVillagerInterface
-	void RequestVillagerSpawn() override;
-	//~IVillagerInterface
-
-	void SpawnVillager();
-
-	void BuildSpawnLocations(UNavigationSystemV1& InNavSys);
-	FVector GetSpawnLocation() const;
-	
 	FTimerHandle SpawnVillagerTimerHandle;
 };

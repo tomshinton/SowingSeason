@@ -18,6 +18,7 @@ public class SowingSeason : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
+"Family",
             "AIBehaviour",
             "AICore",
 			"Build",
