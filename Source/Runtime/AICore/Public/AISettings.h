@@ -15,8 +15,13 @@ class UAISettings : public UDeveloperSettings
 public:
 
 	UAISettings()
+		: VillagerClass()
+		, NewFamilyEmerganceChance(0.3f)
 	{};
 
 	UPROPERTY(config, EditDefaultsOnly, Category = "Classes")
 	FSoftClassPath VillagerClass;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "Family Generation", meta = (UIMin = 0, UIMax = 1, ClampMin = 0, ClampMax = 1))
+	float NewFamilyEmerganceChance;
 };

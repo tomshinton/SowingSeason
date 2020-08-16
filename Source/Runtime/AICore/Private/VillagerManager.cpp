@@ -6,6 +6,7 @@
 #include "Runtime/AICore/Public/Core/VillagerPawn.h"
 #include "Runtime/AICore/Public/Spawning/VillagerSpawnVolume.h"
 
+#include <Runtime/AIIdentity/Public/IdentityInterface.h>
 #include <Runtime/Engine/Classes/Components/BoxComponent.h>
 #include <Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
 #include <Runtime/Engine/Public/EngineUtils.h>
@@ -35,10 +36,12 @@ UVillagerManager::UVillagerManager()
 	, PotentialSpawnLocations()
 	, AISettings(GetDefault<UAISettings>())
 	, AsyncLoader(MakeUnique<FAsyncLoader>())
+	, VillagerClass(nullptr)
+	, Villagers()
 	, NumVillagerRequests(0)
 	, SpawnVillagerTimerHandle()
 {
-
+	FamilyGenerator->SetNewFamilyEmerganceChange(AISettings->NewFamilyEmerganceChance);
 }
 
 void UVillagerManager::Init(UWorld& InWorld)
@@ -95,7 +98,7 @@ void UVillagerManager::SpawnVillager()
 			Villagers.AddUnique(NewVillager);
 			--NumVillagerRequests;
 
-
+			AssignIdentity(*NewVillager);
 		}
 	}
 
@@ -153,4 +156,12 @@ void UVillagerManager::BuildSpawnLocations(UNavigationSystemV1& InNavSys)
 FVector UVillagerManager::GetSpawnLocation() const
 {
 	return PotentialSpawnLocations[FMath::RandRange(0, PotentialSpawnLocations.Num() - 1)];
+}
+
+void UVillagerManager::AssignIdentity(AVillagerPawn& InVillager)
+{
+	if (IIdentityInterface* IdentityInterface = InVillager.GetInterface<IIdentityInterface>())
+	{
+		IdentityInterface->SetFamily(FamilyGenerator->GetFamilyForVillager(IdentityInterface->GetVillagerID()));
+	}
 }

@@ -35,7 +35,7 @@ const UPrimitiveComponent& ABuilding::GetFootprintReference() const
 
 void ABuilding::OnSelected()
 {
-	//Add outline, play sound, etc etc
+
 }
 
 void ABuilding::OnUnselected()

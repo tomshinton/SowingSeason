@@ -19,5 +19,4 @@ class IVillagerInterface
 public:
 
 	virtual void RequestVillagerSpawn() = 0;
-	virtual FGuid RequestFamily(const FGuid& InRequestingVillager) = 0;
 };

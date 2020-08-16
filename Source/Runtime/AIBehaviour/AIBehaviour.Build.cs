@@ -13,6 +13,7 @@ public class AIBehaviour : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] 
         {
 			"AIModule",
+			"AIIdentity",
 			"Buildings",
 			"GameplayTasks",
             "Engine",

@@ -7,7 +7,7 @@
 #include "Runtime/AICore/Public/VillagerInterface.h"
 #include <Runtime/CoreUObject/Public/Serialization/AsyncLoader.h>
 
-#include <Runtime/Family/Public/FamilyGeneratorComponent.h>
+#include <Runtime/AIIdentity/Public/Family/FamilyGeneratorComponent.h>
 
 #include "VillagerManager.generated.h"
 
@@ -30,13 +30,13 @@ private:
 
 	//IVillagerInterface
 	void RequestVillagerSpawn() override;
-	FGuid RequestFamily(const FGuid& InRequestingVillager) override { return FamilyGenerator->GetFamilyForVillager(InRequestingVillager); };
 	//~IVillagerInterface
 
 	void SpawnVillager();
 
 	void BuildSpawnLocations(UNavigationSystemV1& InNavSys);
 	FVector GetSpawnLocation() const;
+	void AssignIdentity(AVillagerPawn& InVillager);
 
 	UPROPERTY()
 	UFamilyGeneratorComponent* FamilyGenerator;

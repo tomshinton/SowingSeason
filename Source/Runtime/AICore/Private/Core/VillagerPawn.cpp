@@ -3,7 +3,8 @@
 #include "Runtime/AICore/Public/Core/VillagerPawn.h"
 
 #include "Runtime/AICore/Public/Core/VillagerController.h"
-#include "Runtime/AICore/Public/Identity/IdentityComponent.h"
+
+#include <Runtime/AIIdentity/Public/IdentityComponent.h>
 
 namespace VillagerPawnPrivate
 {
