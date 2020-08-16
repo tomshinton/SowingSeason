@@ -3,6 +3,7 @@
 #include "Runtime/AIBehaviour/Public/Services/BTService_FindResidence.h"
 
 #include <Runtime/AIIdentity/Public/IdentityInterface.h>
+#include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
 #include <Runtime/Buildings/Public/Residence/ResidenceInterface.h>
 #include <Runtime/Engine/Public/EngineUtils.h>
 
@@ -12,7 +13,7 @@ UBTService_FindResidence::UBTService_FindResidence()
 {
 	NodeName = "Find Viable Residence";
 
-	ResidenceActorKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UBTService_FindResidence, ResidenceActorKey), UObject::StaticClass());
+	ResidenceKey.AddGuidFilter(this, GET_MEMBER_NAME_CHECKED(UBTService_FindResidence, ResidenceKey));
 }
 
 FString UBTService_FindResidence::GetStaticDescription() const
@@ -51,6 +52,7 @@ uint16 UBTService_FindResidence::GetInstanceMemorySize() const
 void UBTService_FindResidence::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	FBTService_FindResidenceMemory* Memory = reinterpret_cast<FBTService_FindResidenceMemory*>(NodeMemory);
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
 	if (!Memory->OwnerIdentity.IsValid())
 	{
@@ -86,7 +88,10 @@ void UBTService_FindResidence::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 						ResidenceInterface->Occupy(VillagerID, FamilyID);
 						Memory->OwnerIdentity->SetResidence(FoundResidence);
 
+						Blackboard->SetValueAsGuid(ResidenceKey.SelectedKeyName, FoundResidence);
+
 						UE_LOG(FindResidenceServiceLog, Log, TEXT("Pawn %s now lives at %s"), *VillagerID.ToString(), *FoundResidence.ToString());
+						break;
 					}
 				}
 			}

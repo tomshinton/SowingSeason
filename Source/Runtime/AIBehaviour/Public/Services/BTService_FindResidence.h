@@ -28,7 +28,7 @@ public:
 	UBTService_FindResidence();
 
 	UPROPERTY(Category = Node, EditAnywhere)
-	struct FBlackboardKeySelector ResidenceActorKey;
+	struct FBlackboardKeySelector ResidenceKey;
 
 private:
 
