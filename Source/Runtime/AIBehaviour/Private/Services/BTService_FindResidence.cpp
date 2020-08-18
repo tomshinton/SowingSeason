@@ -49,26 +49,25 @@ uint16 UBTService_FindResidence::GetInstanceMemorySize() const
 	return sizeof(FBTService_FindResidenceMemory);
 }
 
+void UBTService_FindResidence::InitializeMemory(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTMemoryInit::Type InitType) const
+{
+	FBTService_FindResidenceMemory* Memory = reinterpret_cast<FBTService_FindResidenceMemory*>(NodeMemory);
+
+	if (AController* ControllerAsOwner = Cast<AController>(OwnerComp.GetOwner()))
+	{
+		if (IIdentityInterface* OwningIdentityInterface = ControllerAsOwner->GetPawn()->GetInterface<IIdentityInterface>())
+		{
+			Memory->OwnerIdentity = *OwningIdentityInterface;
+		}
+	}
+
+	Super::InitializeMemory(OwnerComp, NodeMemory, InitType);
+}
+
 void UBTService_FindResidence::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	FBTService_FindResidenceMemory* Memory = reinterpret_cast<FBTService_FindResidenceMemory*>(NodeMemory);
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
-
-	if (!Memory->OwnerIdentity.IsValid())
-	{
-		if (AController* ControllerAsOwner = Cast<AController>(OwnerComp.GetOwner()))
-		{
-			if (IIdentityInterface* OwningIdentityInterface = ControllerAsOwner->GetPawn()->GetInterface<IIdentityInterface>())
-			{
-				Memory->OwnerIdentity = *OwningIdentityInterface;
-			}
-		}
-		else
-		{
-			UE_LOG(FindResidenceServiceLog, Error, TEXT("%s has no IdentityInterface - cannot find residence for Pawn with no Identity Component"), *OwnerComp.GetOwner()->GetName());
-			return;
-		}
-	}
 
 	if (Memory->OwnerIdentity.IsValid() && !Memory->OwnerIdentity->GetResidenceID().IsValid())
 	{

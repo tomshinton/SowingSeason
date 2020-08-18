@@ -1,5 +1,7 @@
 #include "Runtime/Buildings/Public/Residence/ResidenceComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(ResidenceComponentLog, Log, Log)
+
 UResidenceComponent::UResidenceComponent()
 	: MaxResidents(0)
 	, ResidentFamily(FGuid())
@@ -22,6 +24,18 @@ FGuid UResidenceComponent::GetResidenceID() const
 
 void UResidenceComponent::Occupy(const FGuid& InVillagerID, const FGuid& InFamilyID)
 {
+	if (!InFamilyID.IsValid())
+	{
+		UE_LOG(ResidenceComponentLog, Warning, TEXT("Resident trying to occupy a residence with no valid FamilyID - this is being called too early"));
+		return;
+	}
+
+	if (!InVillagerID.IsValid())
+	{
+		UE_LOG(ResidenceComponentLog, Warning, TEXT("Resident trying to occupy a residence with no valid VillagerID - this is being called too early"));
+		return;
+	}
+
 	ResidentIDs.AddUnique(InVillagerID);
 
 	if (!ResidentFamily.IsValid())

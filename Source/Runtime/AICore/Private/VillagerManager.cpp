@@ -89,16 +89,19 @@ void UVillagerManager::SpawnVillager()
 {
 	if (VillagerClass != nullptr)
 	{
-		if (AVillagerPawn* NewVillager = World->SpawnActor<AVillagerPawn>(VillagerClass, GetSpawnLocation(), FRotator::ZeroRotator))
+		const FTransform SpawnTrans = FTransform(FQuat::Identity, GetSpawnLocation());
+		if(AVillagerPawn* NewVillager = World->SpawnActorDeferred<AVillagerPawn>(VillagerClass, SpawnTrans))
 		{
 #if WITH_EDITOR
 			NewVillager->SetFolderPath(VillagerManagerPrivate::VillagerFolderPath);
 #endif //WITH_EDITOR
 
+			AssignIdentity(*NewVillager);
+
 			Villagers.AddUnique(NewVillager);
 			--NumVillagerRequests;
 
-			AssignIdentity(*NewVillager);
+			NewVillager->FinishSpawning(SpawnTrans);
 		}
 	}
 
