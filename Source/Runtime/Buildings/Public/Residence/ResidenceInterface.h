@@ -23,6 +23,4 @@ public:
 	virtual void Occupy(const FGuid& InVillagerID, const FGuid& InFamilyID) = 0;
 	virtual bool CanOccupy(const FGuid& InFamilyID) const = 0;
 	virtual void ClaimForFamily(const FGuid& InClaimingFamily) = 0;
-
-	virtual FGuid GetResidenceID() const = 0;
 };

@@ -15,9 +15,10 @@ public class AIBehaviour : ModuleRules
 			"AIModule",
 			"AIIdentity",
 			"Buildings",
-			"GameplayTasks",
+            "CoreUObject",
             "Engine",
-            "CoreUObject"
+			"GameplayTasks",
+			"Selection"
         });
 		
 		PublicIncludePaths.AddRange(new string[] {"Runtime/AIBehaviour/Public"});

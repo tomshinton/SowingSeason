@@ -4,6 +4,7 @@
 
 #include <Runtime/Engine/Classes/GameFramework/Actor.h>
 
+#include "Runtime/Buildings/Public/BuildingInterface.h"
 #include "Runtime/Buildings/Public/FootprintProviderInterface.h"
 
 #include <Runtime/Engine/Classes/Components/StaticMeshComponent.h>
@@ -18,6 +19,7 @@ UCLASS(MinimalAPI)
 class ABuilding : public AActor
 	, public IFootprintProvider
 	, public ISelectionInterface
+	, public IBuildingInterface
 
 {
 	GENERATED_BODY()
@@ -56,4 +58,12 @@ public:
 	virtual AActor& GetActor() override;
 	virtual FText GetSelectionName() const override;
 	//~ISelectionInterface
+
+	//IBuildingInterface
+	virtual FGuid GetBuildingID() const override;
+	//~IBuildingInterface
+
+private:
+
+	FGuid BuildingID;
 };

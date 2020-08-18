@@ -20,6 +20,7 @@ ABuilding::ABuilding(const FObjectInitializer& ObjectInitializer)
 	, InventoryComponent(ObjectInitializer.CreateDefaultSubobject<UInventoryComponent>(this, BuildingPrivate::InventoryComponentName))
 	, SelectionBoxClass(nullptr)
 	, SelectionBoxLocation(FVector::ZeroVector)
+	, BuildingID(FGuid::NewGuid())
 {
 	RootComponent = BuildingRoot;
 
@@ -46,6 +47,11 @@ void ABuilding::OnUnselected()
 FText ABuilding::GetSelectionName() const
 {
 	return BuildingName;
+}
+
+FGuid ABuilding::GetBuildingID() const
+{
+	return BuildingID;
 }
 
 FVector ABuilding::GetSelectionBoxLocation() const

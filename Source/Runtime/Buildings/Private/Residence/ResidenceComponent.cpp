@@ -5,7 +5,6 @@ DEFINE_LOG_CATEGORY_STATIC(ResidenceComponentLog, Log, Log)
 UResidenceComponent::UResidenceComponent()
 	: MaxResidents(0)
 	, ResidentFamily(FGuid())
-	, ResidenceID(FGuid::NewGuid())
 	, ResidentIDs()
 {
 
@@ -15,11 +14,6 @@ bool UResidenceComponent::CanOccupy(const FGuid& InFamilyID) const
 {
 	return !IsOccupied() ||
 		(ResidentFamily == InFamilyID && ResidentIDs.Num() < MaxResidents);
-}
-
-FGuid UResidenceComponent::GetResidenceID() const
-{
-	return ResidenceID;
 }
 
 void UResidenceComponent::Occupy(const FGuid& InVillagerID, const FGuid& InFamilyID)

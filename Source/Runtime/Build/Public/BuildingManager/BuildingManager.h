@@ -21,6 +21,8 @@ class UBuildingManager : public UObject
 
 public:
 
+	UBuildingManager();
+
 	BUILD_API void Init(UWorld& InWorld);
 
 private:
@@ -33,4 +35,7 @@ private:
 
 	UPROPERTY()
 	UWorld* World;
+
+	UPROPERTY()
+	TArray<ABuilding*> Manifest;
 };

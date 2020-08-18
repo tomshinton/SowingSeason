@@ -4,6 +4,8 @@
 
 #include <Runtime/AIIdentity/Public/IdentityInterface.h>
 #include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
+#include <Runtime/Buildings/Public/Building.h>
+#include <Runtime/Buildings/Public/BuildingInterface.h>
 #include <Runtime/Buildings/Public/Residence/ResidenceInterface.h>
 #include <Runtime/Engine/Public/EngineUtils.h>
 
@@ -71,26 +73,29 @@ void UBTService_FindResidence::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 
 	if (Memory->OwnerIdentity.IsValid() && !Memory->OwnerIdentity->GetResidenceID().IsValid())
 	{
-		for (TActorIterator<AActor> Itr(OwnerComp.GetWorld()); Itr; ++Itr)
+		for (TActorIterator<ABuilding> Itr(OwnerComp.GetWorld()); Itr; ++Itr)
 		{
 			if (AActor* Actor = *Itr)
 			{
 				if (IResidenceInterface* ResidenceInterface = Actor->GetInterface<IResidenceInterface>())
 				{
-					const FGuid FamilyID = Memory->OwnerIdentity->GetFamilyID();
-					const FGuid VillagerID = Memory->OwnerIdentity->GetVillagerID();
-
-					const FGuid FoundResidence = ResidenceInterface->GetResidenceID();
-
-					if (ResidenceInterface->CanOccupy(FamilyID))
+					if (const IBuildingInterface* BuildingInterface = Actor->GetInterface<IBuildingInterface>())
 					{
-						ResidenceInterface->Occupy(VillagerID, FamilyID);
-						Memory->OwnerIdentity->SetResidence(FoundResidence);
+						const FGuid FamilyID = Memory->OwnerIdentity->GetFamilyID();
+						const FGuid VillagerID = Memory->OwnerIdentity->GetVillagerID();
 
-						Blackboard->SetValueAsGuid(ResidenceKey.SelectedKeyName, FoundResidence);
+						const FGuid FoundResidence = BuildingInterface->GetBuildingID();
 
-						UE_LOG(FindResidenceServiceLog, Log, TEXT("Pawn %s now lives at %s"), *VillagerID.ToString(), *FoundResidence.ToString());
-						break;
+						if (ResidenceInterface->CanOccupy(FamilyID))
+						{
+							ResidenceInterface->Occupy(VillagerID, FamilyID);
+							Memory->OwnerIdentity->SetResidence(FoundResidence);
+
+							Blackboard->SetValueAsGuid(ResidenceKey.SelectedKeyName, FoundResidence);
+
+							UE_LOG(FindResidenceServiceLog, Log, TEXT("Pawn %s now lives at %s"), *VillagerID.ToString(), *FoundResidence.ToString());
+							break;
+						}
 					}
 				}
 			}

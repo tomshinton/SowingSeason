@@ -29,11 +29,8 @@ private:
 	bool IsAtCapacity() const override;
 	void ClaimForFamily(const FGuid& InClaimingFamily) override;
 	bool CanOccupy(const FGuid& InFamilyID) const override;
-	FGuid GetResidenceID() const override;
 	//IResidenceInterface
 	
 	FGuid ResidentFamily;
-	FGuid ResidenceID;
-
 	TArray<FGuid> ResidentIDs;
 };

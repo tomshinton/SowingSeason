@@ -18,6 +18,13 @@ namespace BuildingManagerPrivate
 #endif //WITH_EDITOR
 }
 
+UBuildingManager::UBuildingManager()
+	: World(nullptr)
+	, Manifest()
+{
+
+}
+
 void UBuildingManager::Init(UWorld& InWorld)
 {
 	World = &InWorld;
@@ -44,7 +51,7 @@ void UBuildingManager::OnBuildingComplete(const FBuildCompleteEvent& InEv)
 {
 	if (ABuilding* SpawnedBuilding = TrySpawnBuilding(InEv))
 	{
-
+		Manifest.Add(SpawnedBuilding);
 	}
 }
 
