@@ -25,10 +25,10 @@ public:
 		, Data()
 	{};
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	FName Name;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	uint8 Amount;
 
 	TOptional<FItemDataRow> Data;

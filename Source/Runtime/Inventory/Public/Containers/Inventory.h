@@ -4,6 +4,8 @@
 
 #include "Runtime/Inventory/Public/Containers/InventoryItem.h"
 
+#include "Runtime/Inventory/Public/Containers/InventoryAccessType.h"
+
 #include "Inventory.generated.h"
 
 USTRUCT()
@@ -23,6 +25,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<FInventoryItem> Items;
+
+	UPROPERTY(EditAnywhere)
+	EInventoryAccessType AccessType;
 
 	void Initialise();
 };

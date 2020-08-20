@@ -16,6 +16,11 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Inventory.Initialise();
+
+	for (const FInventoryItem& StartingItem : Inventory.StartingItems)
+	{
+		AddItem(StartingItem.Amount, StartingItem.Name);
+	}
 }
 
 void UInventoryComponent::AddItem(const uint8 InNumToAdd, const FName& InItem)
